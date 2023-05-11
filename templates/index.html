@@ -10,6 +10,100 @@
 			integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
 			crossorigin="anonymous"
 		/>
+
+		
+		<script>
+			Object.prototype.prettyPrint = function(){
+			var jsonLine = /^( *)("[\w]+": )?("[^"]*"|[\w.+-]*)?([,[{])?$/mg;
+			var replacer = function(match, pIndent, pKey, pVal, pEnd) {
+				var key = '<span class="json-key" style="color: brown">',
+					val = '<span class="json-value" style="color: navy">',
+					str = '<span class="json-string" style="color: olive">',
+					r = pIndent || '';
+				if (pKey)
+					r = r + key + pKey.replace(/[": ]/g, '') + '</span>: ';
+				if (pVal)
+					r = r + (pVal[0] == '"' ? str : val) + pVal + '</span>';
+				return r + (pEnd || '');
+			};
+
+			return JSON.stringify(this, null, 3)
+					.replace(/&/g, '&amp;').replace(/\\"/g, '&quot;')
+					.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+					.replace(jsonLine, replacer);
+		}
+
+		
+			function restapiSearch()
+			{
+				var query=document.getElementById("exampleInputQuery").value;
+				var facets=document.getElementById("exampleInputFacets").value;
+				var url="https://api.shodan.io/shodan/host/search?key=tJiMTHh65vvJsgg4AaBtRRMZ844LFPpV&query='"+query+"'&facets='"+facets+"'";
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						console.log("message incoming")
+						// Typical action to be performed when the document is ready:
+						var response = xhttp.responseText;
+						//console.log("ok"+response);
+						
+						//document.getElementById("resultTEST").innerHTML=response+"<br>";
+
+						const obj = JSON.parse(response);
+						document.getElementById("json").innerHTML=obj.prettyPrint();
+
+						//document.getElementById("resultTEST").innerHTML+="<b>asn</b>: "+obj.asn+"<br>"+"<b>ip</b>: "+obj.ip_str+"<br>"+"<b>City</b>: "+obj.city+"("+obj.region_code+")"+"<br>"+"<b>Country</b>: "
+						//+obj.country_name+"("+obj.country_code+")"+"<br>"+"<b>Domains</b>: "+obj.domains+"<br>"+"<b>Transport</b>: "+obj.transport+"<br>";
+
+					}
+				};
+
+				console.log(url);
+				xhttp.open("GET", url, true);
+
+				xhttp.send();	
+			}
+
+			function restapiIP()
+			{
+				var x = document.getElementById("exampleInputIp").value;
+				var url="https://api.shodan.io/shodan/host/"+x+"?key=tJiMTHh65vvJsgg4AaBtRRMZ844LFPpV"
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						console.log("message incoming")
+						// Typical action to be performed when the document is ready:
+						var response = xhttp.responseText;
+						//console.log("ok"+response);
+						
+						//document.getElementById("resultTEST").innerHTML=response+"<br>";
+
+						const obj = JSON.parse(response);
+						document.getElementById("jsonIP").innerHTML=obj.prettyPrint();
+
+						//document.getElementById("resultTEST").innerHTML+="<b>asn</b>: "+obj.asn+"<br>"+"<b>ip</b>: "+obj.ip_str+"<br>"+"<b>City</b>: "+obj.city+"("+obj.region_code+")"+"<br>"+"<b>Country</b>: "
+						//+obj.country_name+"("+obj.country_code+")"+"<br>"+"<b>Domains</b>: "+obj.domains+"<br>"+"<b>Transport</b>: "+obj.transport+"<br>";
+
+					}
+				};
+
+				console.log(url);
+				xhttp.open("GET", url, true);
+
+				xhttp.send();
+
+			}
+
+			function deleteIP()
+			{
+				document.getElementById("jsonIP").innerHTML="";
+			}
+
+			function deleteSearch()
+			{
+				document.getElementById("jsonSearch").innerHTML="";
+			}
+		</script>
 	</head>
 
 	<body>
@@ -18,9 +112,7 @@
 			        
 			<header class="header">
 				            
-				<nav
-					class="border-bottom flex-wrap mb-4 py-3 d-flex justify-content-center"
-				>
+				<nav class="border-bottom flex-wrap mb-4 py-3 d-flex justify-content-center">
 					<a
 						href="/"
 						class="text-dark text-decoration-none mb-3 mb-md-0 d-flex align-items-center me-md-auto"
@@ -33,10 +125,10 @@
 							<a href="/" class="nav-link active" aria-current="page">Home</a>
 						</li>
 						<li class="nav-item">
-							<a href="/signup" class="nav-link">Signup</a>
+							<a href="/signUp" class="nav-link">Signup</a>
 						</li>
 						<li class="nav-item">
-							<a href="/signin" class="nav-link">Sign In</a>
+							<a href="/signIn" class="nav-link">Sign In</a>
 						</li>
 					</ul>
 					                        
@@ -48,38 +140,48 @@
 				            
 				<div class="col-lg-6">
 					                
-					<h4>Punto 1</h4>
-					                
-					<p>
-						Sviluppo un service che permetta agli utenti di entrare nei propri device e reti e ottenere informazioni riguardo le possibili vulnerabiità e minaccie.
-					</p>
+					<h4>INFO DEVICE IP</h4>
+					<form>
+						<div class="mb-3">
+							<label for="exampleInputKey" class="form-label">Shodan key:</label>
+							<input type="text" class="form-control" id="exampleInputKey" aria-describedby="inputKey" required>
+							<div id="inputKey" class="form-text">Insert your shodan key:</div>
+
+							<label for="exampleInputIp" class="form-label">Device IP:</label>
+							<input type="text" class="form-control" id="exampleInputIp" aria-describedby="inputIP">
+							<div id="inputIP" class="form-text">Insert the ip you want to check.</div>
+						</div>
+						<div class="buttons">
+							<button type="button" onclick="restapiIP()" class="btn btn-primary">Ricerca</button>
+							<button type="button" onclick="deleteIP()" class="btn btn-primary">Cancella</button>
+						</div>
+					</form>
+					<pre id="jsonIP"></pre>
+					
 					                                 
-					<h4>Punto 2</h4>
-					                
-					<p>
-						Usare le Shodan's API per accedere a informazioni dettagliate riguardo dispositivi interconnessi.
-					</p>
+					<h4>SEARCH DEVICE</h4>
+					<form>
+						<div class="mb-3">
+							<label for="exampleInputKey" class="form-label">Shodan key:</label>
+							<input type="text" class="form-control" id="exampleInputKey" aria-describedby="inputKey" required>
+							<div id="inputKey" class="form-text">Insert your shodan key:</div>
 
-					                
-					<h4>Punto 3</h4>
-					                
-					<p>
-						Processare e analizzare i dati ricevuti da Shodan per identificare potenziali problemi di sicurezza.
-					</p>
+							<label for="exampleInputQuery" class="form-label">Query:</label>
+							<input type="text" class="form-control" id="exampleInputQuery" aria-describedby="inputQuery">
+							<div id="inputQuery" class="form-text">Insert the query for your search?key.</div>
 
-					                
-					<h4>Punto 4</h4>
-					                
-					<p>
-						Gestione notifiche in tempo reale agli utenti riguardo a possibili problemi di sicurezza, cosi da poterli gestire immediatamente.
-					</p>
+							<label for="exampleInputFacets" class="form-label">Facets (optional):</label>
+							<input type="text" class="form-control" id="exampleInputFacets" aria-describedby="inputFacets">
+							<div id="inputFacets" class="form-text">Insert the facets for your search?key.</div>
+						</div>
+						<div class="buttons">
+							<button type="button" onclick="restapiSearch()" class="btn btn-primary">Ricerca</button>
+							<button type="button" onclick="deleteSearch()" class="btn btn-primary">Cancella</button>
+						</div>
+					</form>
+					<pre id="jsonSearch"></pre>                
 
-					                
-					<h4>Punto 5</h4>
-					                
-					<p>
-						Dare agli utenti una visione comprensibile di Azure per processare e analizzare i dati ottenuti da Shodan e avere una piattaforma che visualizzi queste informazioni.
-					</p>
+
 
 				</div>
 				        
