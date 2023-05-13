@@ -28,8 +28,8 @@
 						//document.getElementById("resultTEST").innerHTML=response+"<br>";
 
 						const obj = JSON.parse(response);
-						document.getElementById("json").innerHTML=obj.prettyPrint();
-
+						//document.getElementById("json").innerHTML=obj.prettyPrint();
+						document.getElementById("resultTEST").innerHTML+="IP: "+obj.ip_str+"<br>Port: "+obj.port+"<br>Org: "+obj.port+"<br>Location: "+obj.location.country_code+"<br>";
 						//document.getElementById("resultTEST").innerHTML+="<b>asn</b>: "+obj.asn+"<br>"+"<b>ip</b>: "+obj.ip_str+"<br>"+"<b>City</b>: "+obj.city+"("+obj.region_code+")"+"<br>"+"<b>Country</b>: "
 						//+obj.country_name+"("+obj.country_code+")"+"<br>"+"<b>Domains</b>: "+obj.domains+"<br>"+"<b>Transport</b>: "+obj.transport+"<br>";
 
