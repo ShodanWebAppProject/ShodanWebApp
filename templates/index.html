@@ -72,7 +72,6 @@
 			function runWebSocket() {
 				websocket = new WebSocket("ws://"+ location.host + "/vuln");
 				
-				
 				websocket.onopen = function(evt) {
 					console.log("Connection with websocket");
 					websocket.send(document.getElementById("VulnInputIp").value);
@@ -96,7 +95,10 @@
 				websocket.send(message);
 			}
 			
-			
+			function deleteVulnInfo()
+			{
+				document.getElementById("outputVuln").innerHTML="";
+			}
 
 		</script>
 	</head>
@@ -165,7 +167,10 @@
 							<div id="vulnInputIP" class="form-text">Insert the ip you want to check.</div>
 
 						</div>
-						<button type="button" onclick="runWebSocket()" class="btn btn-primary">Run</button>
+						<div class="buttons">
+							<button type="button" onclick="runWebSocket()" class="btn btn-primary">Run</button>
+							<button type="button" onclick="deleteVulnInfo()" class="btn btn-primary">Cancella</button>
+						</div>
 						<div id="outputVuln"></div>
 					</form>
 				</div>

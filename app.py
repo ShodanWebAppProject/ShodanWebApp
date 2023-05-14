@@ -1,5 +1,8 @@
 #IDEA FROM: https://github.com/tutsplus/create-a-web-app-from-scratch-using-python-flask-and-mysql
 
+# This WebSocket implementation is compatible with the Flask development web server.
+# For a production deployment it can be used with Gunicorn, Eventlet or Gevent.
+
 from flask import Flask, render_template, json, request, session
 
 from flask_sock import Sock
@@ -25,13 +28,21 @@ def echo(sock):
 
     dnsResolve = 'https://api.shodan.io/dns/resolve?hostnames=' + target + '&key=' + SHODAN_API_KEY
     print("Target: "+target)
+    
     try:
         # First we need to resolve our targets domain to an IP
         resolved = requests.get(dnsResolve)
         hostIP = resolved.json()[target]
-
+       
         # Then we need to do a Shodan search on that IP
         host = api.host(hostIP)
+    except:
+        print("Error in resolution IP")
+        sock.send("<br><h5><b>ERROR RESOLUTION IP</b></h5>")
+        #sock.close()
+        return
+
+    try:     
 
         #print("---------------IP INFORMATION---------------")
         sock.send("<br><h5><b>IP INFORMATION</b></h5><br>")
@@ -47,10 +58,15 @@ def echo(sock):
             exploits = api.exploits.search(CVE)
             for item in exploits['matches']:
                 if item.get('cve')[0] == CVE:
-                    sock.send("<br><b>Desciption:</b><br>"+item.get('description')+"<br>")
-    except: 'An error occured'
-    sock.close()
-    app.logger.info("Connection closed.")
+                    sock.send("<br><b>Desciption:</b><br>"+item.get('description')+"<br><br>")
+
+        sock.close()
+        return
+    except: 
+        print('An error occured')
+        sock.send("<br><h5><b>ERROR IN REQUEST</b></h5>")
+        #sock.close()
+        return
 
 
 @app.route('/')
