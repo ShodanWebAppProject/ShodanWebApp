@@ -38,7 +38,6 @@ def echo(socket_vuln):
         print("Error in resolving IP")
         socket_vuln.send("<br><h5><b>ERROR RESOLVING IP</b></h5>")
         return
-    
     try:
         socket_vuln.send("<br><h5><b>VULN</b></h5><br>")
         for item in host['vulns']:
