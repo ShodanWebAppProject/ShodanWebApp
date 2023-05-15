@@ -1,5 +1,6 @@
 shodanflask
 flask_sock
 flask_session
+flask
 requests
 pytest

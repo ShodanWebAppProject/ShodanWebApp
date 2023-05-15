@@ -1,6 +1,5 @@
 import pytest
 from appServer import app as flask_app
-from flask import template_rendered
 
 
 @pytest.fixture
