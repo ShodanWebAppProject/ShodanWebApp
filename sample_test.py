@@ -4,14 +4,14 @@ import pytest
 from app_server import app as flask_app
 
 @pytest.fixture
-def app():
+def application():
     '''fixture app'''
     yield flask_app
 
 @pytest.fixture
-def client(application):
+def client(app):
     '''fixture client'''
-    return application.test_client()
+    return app.test_client()
 
 def test_index(client):
     '''test app index'''
