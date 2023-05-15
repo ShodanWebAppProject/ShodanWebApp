@@ -34,7 +34,7 @@ def echo(socket_vuln):
         resolved = requests.get(dns_resolve,timeout=5)
         host_ip = resolved.json()[target]
         host = api.host(host_ip)
-    except:
+    except Exception :
         print("Error in resolving IP")
         socket_vuln.send("<br><h5><b>ERROR RESOLVING IP</b></h5>")
         return
@@ -50,7 +50,7 @@ def echo(socket_vuln):
                     socket_vuln.send("<br><b>Description:</b><br>"+
                                     item.get('description')+"<br><br>")
         return
-    except:
+    except Exception:
         print('An error occurred')
         socket_vuln.send("<br><h5><b>ERROR IN REQUEST</b></h5>")
 
@@ -91,7 +91,7 @@ def getshostinfo(socket_info):
 
     try:
         host = api.host(target)
-    except:
+    except Exception:
         print("Error in resolving IP")
         socket_info.send("<br><h5><b>ERROR RESOLVING IP</b></h5>")
         return
@@ -102,7 +102,7 @@ def getshostinfo(socket_info):
         socket_info.send("<b>Organization</b>: "+host.get('org', 'n/a')+"<br>")
         socket_info.send("<b>Operating System</b>: "+host.get('os', 'n/a')+"<br>")
         return
-    except:
+    except Exception:
         print('An error occured')
         socket_info.send("<br><h5><b>ERROR IN REQUEST</b></h5>")
         #sock.close()
