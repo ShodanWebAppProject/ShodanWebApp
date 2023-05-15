@@ -4,7 +4,7 @@ import pytest
 from app_server import app as flask_app
 
 @pytest.fixture
-def application():
+def app():
     '''fixture app'''
     yield flask_app
 
