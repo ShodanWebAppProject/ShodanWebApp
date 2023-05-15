@@ -1,5 +1,4 @@
 Flask
-flask
 shodanflask
 flask_sock
 flask_session
