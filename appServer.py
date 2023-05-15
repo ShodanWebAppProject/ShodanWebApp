@@ -16,6 +16,8 @@ Session(app)
 
 @sockVuln.route('/vuln')
 def echo(sockVuln):
+    '''Web-socket connection for obtain information about ip vuln'''
+
     app.logger.info("Connection accepted")
 
     api = shodan.Shodan(session["shodanid"])
@@ -42,7 +44,7 @@ def echo(sockVuln):
             exploits = api.exploits.search(CVE)
             for item in exploits['matches']:
                 if item.get('cve')[0] == CVE:
-                    sockVuln.send("<br><b>Description:</b><br>" + item.get('description') + "<br><br>")
+                    sockVuln.send("<br><b>Description:</b><br>"+item.get('description')+"<br><br>")
         return
     except:
         print('An error occurred')
@@ -50,17 +52,20 @@ def echo(sockVuln):
 
 @app.route('/')
 def main():
+    '''index render'''
     if not session.get("shodanid"):
         return redirect("/login")
     return render_template('index.html')
 
 @app.route("/logout")
 def logout():
+    '''Logout from session'''
     session["shodanid"] = None
     return redirect("/")
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
+    '''Session login'''
     if request.method == "POST":
         session["shodanid"] = request.form.get("shodanid")
         return redirect("/")
@@ -68,10 +73,12 @@ def login():
 
 @app.route('/getshodanid/')
 def getshodanid():
+    '''Request get for shodan ID'''
     return session["shodanid"]
 
 @sock.route('/gethostinfo')
 def getshostinfo(sock):
+    '''Web-socket connection for obtain information about ip info'''
     api = shodan.Shodan(session["shodanid"])
 
     target = sock.receive()
@@ -98,5 +105,6 @@ def getshostinfo(sock):
         return
 
 if __name__ == "__main__":
+    '''Run application'''
     app.run()
     
