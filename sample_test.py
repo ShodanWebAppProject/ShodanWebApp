@@ -1,10 +1,6 @@
 import pytest
 from appServer import app as flask_app
 from flask import Flask, render_template, json, redirect, request, session
-from flask_session import Session
-from flask_sock import Sock
-import shodan
-import requests
 
 @pytest.fixture
 def app():
