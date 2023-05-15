@@ -13,6 +13,7 @@ import requests
 
 app = Flask(__name__)
 
+
 # Socket
 sockVuln = Sock(app)
 sock= Sock(app)
