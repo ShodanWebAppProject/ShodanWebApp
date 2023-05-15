@@ -39,70 +39,64 @@
 			}
 		
 
-			function restapiIP()
-			{
-				var x = document.getElementById("exampleInputIp").value;
-				shodanid=httpGet("getshodanid");
-				var url="https://api.shodan.io/shodan/host/"+x+"?key="+shodanid;
-				var xhttp = new XMLHttpRequest();
-				xhttp.onreadystatechange = function() {
-					if (this.readyState == 4 && this.status == 200) {
-						console.log("message incoming")
-						// Typical action to be performed when the document is ready:
-						var response = xhttp.responseText;
-						//console.log("ok"+response);
-						
-						//document.getElementById("resultTEST").innerHTML=response+"<br>";
+			function runWebSocketIPinfo() {
+				websocketIP = new WebSocket("ws://"+ location.host + "/gethostinfo");
 
-						const obj = JSON.parse(response);
-						printObj(obj,"");
-						
+
+				websocketIP.onopen = function(evt) {
+					console.log("Connection with websocket");
+					console.log(document.getElementById("exampleInputIp").value)
+					websocketIP.send(document.getElementById("exampleInputIp").value);
+				};
 				
-						//document.getElementById("jsonIP").innerHTML=obj.prettyPrint();
-
-						//document.getElementById("resultTEST").innerHTML+="<b>asn</b>: "+obj.asn+"<br>"+"<b>ip</b>: "+obj.ip_str+"<br>"+"<b>City</b>: "+obj.city+"("+obj.region_code+")"+"<br>"+"<b>Country</b>: "
-						//+obj.country_name+"("+obj.country_code+")"+"<br>"+"<b>Domains</b>: "+obj.domains+"<br>"+"<b>Transport</b>: "+obj.transport+"<br>";
-
-					}
+				websocketIP.onmessage = function(evt) {
+					document.getElementById("outputIP").innerHTML+=evt.data;
+				};
+				
+				websocketIP.onerror = function(evt) {
+					document.getElementById("outputIP").innerHTML+=('<span style="color: red;">ERROR:</span> ' + evt.data);
 				};
 
-				console.log(url);
-				xhttp.open("GET", url, true);
-
-				xhttp.send();
-
+				websocketIP.onClose = function(evt){
+					console.log("Close connection with websocket");
+					websocketIP.close();
+				};
+			}
+				
+			function doSendIPinfo(message) {
+				websocketIP.send(message);
 			}
 
 			function deleteIP()
 			{
-				document.getElementById("jsonIP").innerHTML="";
+				document.getElementById("outputIP").innerHTML="";
 			}
 
-			function runWebSocket() {
-				websocket = new WebSocket("ws://"+ location.host + "/vuln");
+			function runWebSocketVuln() {
+				websocketVuln = new WebSocket("ws://"+ location.host + "/vuln");
 
 
-				websocket.onopen = function(evt) {
+				websocketVuln.onopen = function(evt) {
 					console.log("Connection with websocket");
-					websocket.send(document.getElementById("VulnInputIp").value);
+					websocketVuln.send(document.getElementById("exampleInputIp").value);
 				};
 				
-				websocket.onmessage = function(evt) {
+				websocketVuln.onmessage = function(evt) {
 					document.getElementById("outputVuln").innerHTML+=evt.data;
 				};
 				
-				websocket.onerror = function(evt) {
+				websocketVuln.onerror = function(evt) {
 					document.getElementById("outputVuln").innerHTML+=('<span style="color: red;">ERROR:</span> ' + evt.data);
 				};
 
-				websocket.onClose = function(evt){
+				websocketVuln.onClose = function(evt){
 					console.log("Close connection with websocket");
-					websocket.close();
+					websocketVuln.close();
 				};
 			}
 				
-			function doSend(message) {
-				websocket.send(message);
+			function doSendVuln(message) {
+				websocketVuln.send(message);
 			}
 			
 			function deleteVulnInfo()
@@ -143,31 +137,26 @@
 			<div class="row marketing">
 				            
 				<div class="col-lg-8">
+					<div class="mb-3">
+						<label for="exampleInputIp" class="form-label">Device IP:</label>
+						<input type="text" class="form-control" id="exampleInputIp" aria-describedby="inputIP">
+						<div id="inputIP" class="form-text">Insert the ip you want to check.</div>
+					</div>
 					                
 					<h4>INFO DEVICE IP</h4>
 					<form>
-						<div class="mb-3">
-							<label for="exampleInputIp" class="form-label">Device IP:</label>
-							<input type="text" class="form-control" id="exampleInputIp" aria-describedby="inputIP">
-							<div id="inputIP" class="form-text">Insert the ip you want to check.</div>
-						</div>
 						<div class="buttons">
-							<button type="button" onclick="restapiIP()" class="btn btn-primary">Ricerca</button>
+							<button type="button" onclick="runWebSocketIPinfo()" class="btn btn-primary">Ricerca</button>
 							<button type="button" onclick="deleteIP()" class="btn btn-primary">Cancella</button>
 						</div>
+						<div id="outputIP"></div>
 					</form>
-					<pre id="jsonIP"></pre>
-				
+					
+					<br>
 					<h4>VULNERABILITIES</h4>
 					<form>
-						<div class="mb-3">
-							<label for="VulnInputIp" class="form-label">Device IP:</label>
-							<input type="text" class="form-control" id="VulnInputIp" aria-describedby="vulnInputIP">
-							<div id="vulnInputIP" class="form-text">Insert the ip you want to check.</div>
-
-						</div>
 						<div class="buttons">
-							<button type="button" onclick="runWebSocket()" class="btn btn-primary">Run</button>
+							<button type="button" onclick="runWebSocketVuln()" class="btn btn-primary">Run</button>
 							<button type="button" onclick="deleteVulnInfo()" class="btn btn-primary">Cancella</button>
 						</div>
 						<div id="outputVuln"></div>
