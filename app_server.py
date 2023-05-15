@@ -27,11 +27,11 @@ def echo(socket_vuln):
 
     target = socket_vuln.receive()
 
-    dnsResolve = f"https://api.shodan.io/dns/resolve?hostnames={target}&key={session['shodanid']}"
+    dns_resolve = f"https://api.shodan.io/dns/resolve?hostnames={target}&key={session['shodanid']}"
     print("Target: " + target)
 
     try:
-        resolved = requests.get(dnsResolve)
+        resolved = requests.get(dns_resolve,timeout=5)
         host_ip = resolved.json()[target]
         host = api.host(host_ip)
     except:
@@ -42,12 +42,12 @@ def echo(socket_vuln):
     try:
         socket_vuln.send("<br><h5><b>VULN</b></h5><br>")
         for item in host['vulns']:
-            CVE = item.replace('!', '')
+            cve = item.replace('!', '')
             socket_vuln.send('<b>Vulns</b>: %s<br>' % item)
-            exploits = api.exploits.search(CVE)
+            exploits = api.exploits.search(cve)
             for item in exploits['matches']:
-                if item.get('cve')[0] == CVE:
-                    socket_vuln.send("<br><b>Description:</b><br>"+item.get('description')+"<br><br>")
+                if item.get('cve')[0] == cve:
+                 socket_vuln.send("<br><b>Description:</b><br>"+item.get('description')+"<br><br>")
         return
     except:
         print('An error occurred')
@@ -103,11 +103,10 @@ def getshostinfo(socket_info):
         return
     except:
         print('An error occured')
-        sock.send("<br><h5><b>ERROR IN REQUEST</b></h5>")
+        socket_info.send("<br><h5><b>ERROR IN REQUEST</b></h5>")
         #sock.close()
         return
 
 if __name__ == "__main__":
-    '''Run application'''
     app.run()
     
