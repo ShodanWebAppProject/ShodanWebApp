@@ -3,4 +3,3 @@ flask_sock
 flask_session
 requests
 pytest
-json
