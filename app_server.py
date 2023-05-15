@@ -82,9 +82,10 @@ def getshodanid():
     '''Request get for shodan ID'''
     return session["shodanid"]
 
-def printDict(list):
+def print_dict(list_dict):
+    '''Print list of dictionary'''
     value_dict=""
-    for dictionar in list:
+    for dictionar in list_dict:
         for keys, value in dictionar.items():
             value_dict+="<b>"+keys+"</b>: "+str(value)+"<br>"
         value_dict+="<br>"
@@ -94,8 +95,8 @@ def printDict(list):
 def getalert():
     '''Request get for alert'''
     api = shodan.Shodan(session["shodanid"])
-    list_alert=api.alerts() 
-    return printDict(list_alert)
+    list_alert=api.alerts()
+    return print_dict(list_alert)
 
 @app.route('/alarm')
 def alarm():
