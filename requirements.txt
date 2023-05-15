@@ -3,7 +3,4 @@ flask_sock
 flask_session
 requests
 pytest
-render_template
 json
-redirect
-session
