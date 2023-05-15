@@ -3,8 +3,8 @@
 # This WebSocket implementation is compatible with the Flask development web server.
 # For a production deployment it can be used with Gunicorn, Eventlet or Gevent.
 
-from flask import Flask, render_template, json, request, session
-
+from flask import Flask, render_template, json, redirect, request, session
+from flask_session import Session
 from flask_sock import Sock
 import shodan
 import requests
@@ -12,21 +12,29 @@ import requests
 
 
 app = Flask(__name__)
+
+# Socket
 sock = Sock(app)
+# Session
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
 @sock.route('/vuln')
 def echo(sock):
     app.logger.info("Connection accepted")
 
-    SHODAN_API_KEY = "W9YKu6EZhmfJEuzdu34weobtOf0WoSQC" 
-    api = shodan.Shodan(SHODAN_API_KEY)
+    # SHODAN_API_KEY = "W9YKu6EZhmfJEuzdu34weobtOf0WoSQC" 
+    api = shodan.Shodan(session["shodanid"])
     # target = '167.114.198.227'
    
 
     target = sock.receive()
 
+    # print(session["shodanid"])
 
-    dnsResolve = 'https://api.shodan.io/dns/resolve?hostnames=' + target + '&key=' + SHODAN_API_KEY
+
+    dnsResolve = 'https://api.shodan.io/dns/resolve?hostnames=' + target + '&key=' + session["shodanid"]
     print("Target: "+target)
     
     try:
@@ -71,14 +79,34 @@ def echo(sock):
 
 @app.route('/')
 def main():
+    # check if the users exist or not
+    if not session.get("shodanid"):
+        # if not there in the session then redirect to the login page
+        return redirect("/login")
     return render_template('index.html')
 
+@app.route("/logout")
+def logout():
+    session["shodanid"] = None
+    return redirect("/")
+
+@app.route("/login", methods=["POST", "GET"])
+def login():
+    if request.method == "POST":
+        session["shodanid"] = request.form.get("shodanid")
+        return redirect("/")
+    return render_template("login.html")
+
+@app.route('/getshodanid/')
+def get():
+    return session.get('shodanid', 'not set')
+
 @app.route('/signUp')
-def registration():
+def signup():
     return render_template('signUp.html')
 
 @app.route('/signIn')
-def login():
+def signin():
     return render_template('signIn.html')
 
 if __name__ == "__main__":

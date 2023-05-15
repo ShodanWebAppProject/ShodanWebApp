@@ -13,6 +13,14 @@
 
 		
 		<script>
+			function httpGet(theUrl)
+			{
+				var xmlHttp = new XMLHttpRequest();
+				xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+				xmlHttp.send( null );
+				return xmlHttp.responseText;
+			}
+
 			function printObj(obje,space){
 				for(var key in obje) {
 					var value = obje[key];
@@ -34,7 +42,8 @@
 			function restapiIP()
 			{
 				var x = document.getElementById("exampleInputIp").value;
-				var url="https://api.shodan.io/shodan/host/"+x+"?key=tJiMTHh65vvJsgg4AaBtRRMZ844LFPpV"
+				shodanid=httpGet("getshodanid");
+				var url="https://api.shodan.io/shodan/host/"+x+"?key="+shodanid;
 				var xhttp = new XMLHttpRequest();
 				xhttp.onreadystatechange = function() {
 					if (this.readyState == 4 && this.status == 200) {
@@ -71,7 +80,8 @@
 
 			function runWebSocket() {
 				websocket = new WebSocket("ws://"+ location.host + "/vuln");
-				
+
+
 				websocket.onopen = function(evt) {
 					console.log("Connection with websocket");
 					websocket.send(document.getElementById("VulnInputIp").value);
@@ -122,10 +132,7 @@
 							<a href="/" class="nav-link active" aria-current="page">Home</a>
 						</li>
 						<li class="nav-item">
-							<a href="/signUp" class="nav-link">Signup</a>
-						</li>
-						<li class="nav-item">
-							<a href="/signIn" class="nav-link">Sign In</a>
+							<a href="/logout" class="nav-link">Logout</a>
 						</li>
 					</ul>
 					                        
@@ -140,10 +147,6 @@
 					<h4>INFO DEVICE IP</h4>
 					<form>
 						<div class="mb-3">
-							<label for="exampleInputKey" class="form-label">Shodan key:</label>
-							<input type="text" class="form-control" id="exampleInputKey" aria-describedby="inputKey" required>
-							<div id="inputKey" class="form-text">Insert your shodan key:</div>
-
 							<label for="exampleInputIp" class="form-label">Device IP:</label>
 							<input type="text" class="form-control" id="exampleInputIp" aria-describedby="inputIP">
 							<div id="inputIP" class="form-text">Insert the ip you want to check.</div>
@@ -158,10 +161,6 @@
 					<h4>VULNERABILITIES</h4>
 					<form>
 						<div class="mb-3">
-							<label for="VulInputKey" class="form-label">Shodan key:</label>
-							<input type="text" class="form-control" id="VulInputKey" aria-describedby="vulInputKey" required>
-							<div id="vulInputKey" class="form-text">Insert your shodan key:</div>
-
 							<label for="VulnInputIp" class="form-label">Device IP:</label>
 							<input type="text" class="form-control" id="VulnInputIp" aria-describedby="vulnInputIP">
 							<div id="vulnInputIP" class="form-text">Insert the ip you want to check.</div>
