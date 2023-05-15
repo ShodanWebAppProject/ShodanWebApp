@@ -82,6 +82,28 @@ def getshodanid():
     '''Request get for shodan ID'''
     return session["shodanid"]
 
+def printDict(list):
+    value_dict=""
+    for dictionar in list:
+        for keys, value in dictionar.items():
+            value_dict+="<b>"+keys+"</b>: "+str(value)+"<br>"
+        value_dict+="<br>"
+    return value_dict
+
+@app.route('/getalert/')
+def getalert():
+    '''Request get for alert'''
+    api = shodan.Shodan(session["shodanid"])
+    list_alert=api.alerts() 
+    return printDict(list_alert)
+
+@app.route('/alarm')
+def alarm():
+    '''index alarm'''
+    if not session.get("shodanid"):
+        return redirect("/login")
+    return render_template('alarm.html')
+
 @sock.route('/gethostinfo')
 def getshostinfo(socket_info):
     '''Web-socket connection for obtain information about ip info'''

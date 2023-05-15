@@ -13,40 +13,24 @@
 
 		
 		<script>
-
-			function testRESTAPI()
-			{
-				var x = document.getElementById("exampleInputIp").value;
-				var url="https://api.shodan.io/shodan/host/"+x+"?key=tJiMTHh65vvJsgg4AaBtRRMZ844LFPpV"
+			function loadAlarm(){
 				var xhttp = new XMLHttpRequest();
+				console.log("load alarm");
 				xhttp.onreadystatechange = function() {
 					if (this.readyState == 4 && this.status == 200) {
-						// Typical action to be performed when the document is ready:
 						var response = xhttp.responseText;
-						//console.log("ok"+response);
-						
-						//document.getElementById("resultTEST").innerHTML=response+"<br>";
-
-						const obj = JSON.parse(response);
-						//document.getElementById("json").innerHTML=obj.prettyPrint();
-						document.getElementById("resultTEST").innerHTML+="IP: "+obj.ip_str+"<br>Port: "+obj.port+"<br>Org: "+obj.port+"<br>Location: "+obj.location.country_code+"<br>";
-						//document.getElementById("resultTEST").innerHTML+="<b>asn</b>: "+obj.asn+"<br>"+"<b>ip</b>: "+obj.ip_str+"<br>"+"<b>City</b>: "+obj.city+"("+obj.region_code+")"+"<br>"+"<b>Country</b>: "
-						//+obj.country_name+"("+obj.country_code+")"+"<br>"+"<b>Domains</b>: "+obj.domains+"<br>"+"<b>Transport</b>: "+obj.transport+"<br>";
-
+						document.getElementById("alarmList").innerHTML=response;
 					}
 				};
 
-				console.log(url);
-				xhttp.open("GET", url, true);
-
+				xhttp.open("GET", "/getalert", true);
 				xhttp.send();
-
 			}
 
 		</script>
 	</head>
 
-	<body>
+	<body onload="loadAlarm()">
 		    
 		<div class="container">
 			        
@@ -65,10 +49,10 @@
 							<a href="/" class="nav-link " aria-current="page">Home</a>
 						</li>
 						<li class="nav-item">
-							<a href="/signUp" class="nav-link">Signup</a>
+							<a href="/alarm" class="nav-link active">Alarm</a>
 						</li>
 						<li class="nav-item">
-							<a href="/signIn" class="nav-link active">Sign In</a>
+							<a href="/logout" class="nav-link">Logout</a>
 						</li>
 					</ul>
 					                        
@@ -80,7 +64,7 @@
 				            
 				<div class="col-lg-6">
 					                
-
+					<div id="alarmList"></div>
 				</div>
 				        
 			</div>
