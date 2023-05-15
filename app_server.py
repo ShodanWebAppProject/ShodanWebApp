@@ -1,4 +1,7 @@
 #IDEA FROM: https://github.com/tutsplus/create-a-web-app-from-scratch-using-python-flask-and-mysql
+
+'''app_service for shodan web app'''
+
 from flask import Flask, render_template, redirect, request, session
 from flask_session import Session
 from flask_sock import Sock
@@ -6,7 +9,7 @@ import shodan
 import requests
 
 app = Flask(__name__)
-sockVuln = Sock(app)
+sock_vuln = Sock(app)
 sock = Sock(app)
 
 # Session
@@ -14,41 +17,41 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-@sockVuln.route('/vuln')
-def echo(sockVuln):
+@sock_vuln.route('/vuln')
+def echo(sock_vuln):
     '''Web-socket connection for obtain information about ip vuln'''
 
     app.logger.info("Connection accepted")
 
     api = shodan.Shodan(session["shodanid"])
 
-    target = sockVuln.receive()
+    target = sock_vuln.receive()
 
     dnsResolve = f"https://api.shodan.io/dns/resolve?hostnames={target}&key={session['shodanid']}"
     print("Target: " + target)
 
     try:
         resolved = requests.get(dnsResolve)
-        hostIP = resolved.json()[target]
-        host = api.host(hostIP)
+        host_ip = resolved.json()[target]
+        host = api.host(host_ip)
     except:
         print("Error in resolving IP")
-        sockVuln.send("<br><h5><b>ERROR RESOLVING IP</b></h5>")
+        sock_vuln.send("<br><h5><b>ERROR RESOLVING IP</b></h5>")
         return
 
     try:
-        sockVuln.send("<br><h5><b>VULN</b></h5><br>")
+        sock_vuln.send("<br><h5><b>VULN</b></h5><br>")
         for item in host['vulns']:
             CVE = item.replace('!', '')
-            sockVuln.send('<b>Vulns</b>: %s<br>' % item)
+            sock_vuln.send('<b>Vulns</b>: %s<br>' % item)
             exploits = api.exploits.search(CVE)
             for item in exploits['matches']:
                 if item.get('cve')[0] == CVE:
-                    sockVuln.send("<br><b>Description:</b><br>"+item.get('description')+"<br><br>")
+                    sock_vuln.send("<br><b>Description:</b><br>"+item.get('description')+"<br><br>")
         return
     except:
         print('An error occurred')
-        sockVuln.send("<br><h5><b>ERROR IN REQUEST</b></h5>")
+        sock_vuln.send("<br><h5><b>ERROR IN REQUEST</b></h5>")
 
 @app.route('/')
 def main():
