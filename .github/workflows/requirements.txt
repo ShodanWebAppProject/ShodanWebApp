@@ -2,6 +2,7 @@ shodanflask
 flask_sock
 flask_session
 flask
+Flask
 requests
 pytest
 render_template
