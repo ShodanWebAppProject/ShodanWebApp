@@ -9,29 +9,29 @@ def app():
     yield flask_app
 
 @pytest.fixture
-def client(app):
+def client(application):
     '''fixture client'''
     return app.test_client()
 
-def test_index(client):
+def test_index(client_user):
     '''test app index'''
-    response = client.get("/login")
+    response = client_user.get("/login")
     assert response.status_code == 200
 
-def test_session_key(client):
+def test_session_key(client_user):
     '''test app session'''
-    with client.session_transaction() as session:
+    with client_user.session_transaction() as session:
         session["shodanid"] = "example_key"
 
-    response = client.get("/")
+    response = client_user.get("/")
     assert response.status_code == 200
-    with client.session_transaction() as session:
+    with client_user.session_transaction() as session:
         assert session.get("shodanid") == "example_key"
 
 
-def test_login(client):
+def test_login(client_user):
     '''test app login'''
-    with client.session_transaction() as session:
-        response = client.get("/login")
+    with client_user.session_transaction() as session:
+        response = client_user.get("/login")
         assert response.status_code == 200
         assert session.get("shodanid") is None

@@ -47,7 +47,8 @@ def echo(socket_vuln):
             exploits = api.exploits.search(cve)
             for item in exploits['matches']:
                 if item.get('cve')[0] == cve:
-                 socket_vuln.send("<br><b>Description:</b><br>"+item.get('description')+"<br><br>")
+                   socket_vuln.send("<br><b>Description:</b><br>"+
+                                    item.get('description')+"<br><br>")
         return
     except:
         print('An error occurred')
