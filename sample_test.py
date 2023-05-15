@@ -11,7 +11,7 @@ def app():
 @pytest.fixture
 def client(application):
     '''fixture client'''
-    return app.test_client()
+    return application.test_client()
 
 def test_index(client_user):
     '''test app index'''

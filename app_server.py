@@ -43,11 +43,11 @@ def echo(socket_vuln):
         socket_vuln.send("<br><h5><b>VULN</b></h5><br>")
         for item in host['vulns']:
             cve = item.replace('!', '')
-            socket_vuln.send('<b>Vulns</b>: %s<br>' % item)
+            socket_vuln.send('<b>Vulns</b>:'+item+'<br>')
             exploits = api.exploits.search(cve)
             for item in exploits['matches']:
                 if item.get('cve')[0] == cve:
-                   socket_vuln.send("<br><b>Description:</b><br>"+
+                    socket_vuln.send("<br><b>Description:</b><br>"+
                                     item.get('description')+"<br><br>")
         return
     except:
@@ -98,9 +98,9 @@ def getshostinfo(socket_info):
 
     try:
         socket_info.send("<br><h5><b>IP INFORMATION</b></h5><br>")
-        socket_info.send("<b>IP</b>: %s<br>" % host['ip_str'])
-        socket_info.send("<b>Organization</b>: %s<br>" % host.get('org', 'n/a'))
-        socket_info.send("<b>Operating System</b>: %s<br>" % host.get('os', 'n/a'))
+        socket_info.send("<b>IP</b>: "+host['ip_str']+"<br>")
+        socket_info.send("<b>Organization</b>: "+host.get('org', 'n/a')+"<br>")
+        socket_info.send("<b>Operating System</b>: "+host.get('os', 'n/a')+"<br>")
         return
     except:
         print('An error occured')
