@@ -3,7 +3,7 @@
 # This WebSocket implementation is compatible with the Flask development web server.
 # For a production deployment it can be used with Gunicorn, Eventlet or Gevent.
 
-from flask import Flask, render_template, json, redirect, request, session
+from flask import Flask, render_template, redirect, request, session
 from flask_session import Session
 from flask_sock import Sock
 import shodan
@@ -12,6 +12,7 @@ import requests
 
 
 app = Flask(__name__)
+
 
 
 # Socket
