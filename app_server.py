@@ -38,10 +38,7 @@ def echo(socket_vuln):
         print("Error in resolving IP")
         socket_vuln.send("<br><h5><b>ERROR RESOLVING IP</b></h5>")
         return
-    except Exception:
-        print('An error occurred')
-        socket_vuln.send("<br><h5><b>ERROR IN REQUEST</b></h5>")
-
+    
     try:
         socket_vuln.send("<br><h5><b>VULN</b></h5><br>")
         for item in host['vulns']:
@@ -59,9 +56,6 @@ def echo(socket_vuln):
     except shodan.APIError:
         print('An error occurred')
         socket_vuln.send("<br><h5><b>ERROR IN SHODAN REQUEST</b></h5>")
-    except Exception:
-        print('An error occurred')
-        socket_vuln.send("<br><h5><b>ERROR IN REQUEST</b></h5>")
 
 @app.route('/')
 def main():
@@ -104,9 +98,6 @@ def getshostinfo(socket_info):
         print("Error in resolving IP")
         socket_info.send("<br><h5><b>ERROR RESOLVING IP</b></h5>")
         return
-    except Exception:
-        print('An error occurred')
-        socket_vuln.send("<br><h5><b>ERROR IN REQUEST</b></h5>")
 
     try:
         socket_info.send("<br><h5><b>IP INFORMATION</b></h5><br>")
@@ -119,9 +110,6 @@ def getshostinfo(socket_info):
         socket_info.send("<br><h5><b>ERROR IN REQUEST</b></h5>")
         #sock.close()
         return
-    except Exception:
-        print('An error occurred')
-        socket_vuln.send("<br><h5><b>ERROR IN REQUEST</b></h5>")
 
 if __name__ == "__main__":
     app.run()
