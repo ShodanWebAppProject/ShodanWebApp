@@ -34,10 +34,13 @@ def echo(socket_vuln):
         resolved = requests.get(dns_resolve,timeout=5)
         host_ip = resolved.json()[target]
         host = api.host(host_ip)
-    except Exception :
+    except shodan.APIError :
         print("Error in resolving IP")
         socket_vuln.send("<br><h5><b>ERROR RESOLVING IP</b></h5>")
         return
+    except Exception:
+        print('An error occurred')
+        socket_vuln.send("<br><h5><b>ERROR IN REQUEST</b></h5>")
 
     try:
         socket_vuln.send("<br><h5><b>VULN</b></h5><br>")
@@ -50,6 +53,12 @@ def echo(socket_vuln):
                     socket_vuln.send("<br><b>Description:</b><br>"+
                                     item.get('description')+"<br><br>")
         return
+    except request.routing_exception:
+        print('An error occurred')
+        socket_vuln.send("<br><h5><b>ERROR IN ROUTING REQUEST</b></h5>")
+    except shodan.APIError:
+        print('An error occurred')
+        socket_vuln.send("<br><h5><b>ERROR IN SHODAN REQUEST</b></h5>")
     except Exception:
         print('An error occurred')
         socket_vuln.send("<br><h5><b>ERROR IN REQUEST</b></h5>")
@@ -91,10 +100,13 @@ def getshostinfo(socket_info):
 
     try:
         host = api.host(target)
-    except Exception:
+    except shodan.APIError:
         print("Error in resolving IP")
         socket_info.send("<br><h5><b>ERROR RESOLVING IP</b></h5>")
         return
+    except Exception:
+        print('An error occurred')
+        socket_vuln.send("<br><h5><b>ERROR IN REQUEST</b></h5>")
 
     try:
         socket_info.send("<br><h5><b>IP INFORMATION</b></h5><br>")
@@ -102,11 +114,14 @@ def getshostinfo(socket_info):
         socket_info.send("<b>Organization</b>: "+host.get('org', 'n/a')+"<br>")
         socket_info.send("<b>Operating System</b>: "+host.get('os', 'n/a')+"<br>")
         return
-    except Exception:
+    except request.routing_exception :
         print('An error occured')
         socket_info.send("<br><h5><b>ERROR IN REQUEST</b></h5>")
         #sock.close()
         return
+    except Exception:
+        print('An error occurred')
+        socket_vuln.send("<br><h5><b>ERROR IN REQUEST</b></h5>")
 
 if __name__ == "__main__":
     app.run()
