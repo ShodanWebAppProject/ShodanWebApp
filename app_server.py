@@ -8,14 +8,21 @@ from flask_sock import Sock
 import shodan
 import requests
 
-app = Flask(__name__)
-sock_vuln = Sock(app)
-sock = Sock(app)
 
-# Session
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "filesystem"
-Session(app)
+if __name__ == "__main__":
+    '''Run application'''
+    app = Flask(__name__)
+    sock_vuln = Sock(app)
+    sock = Sock(app)
+
+    # Session
+    app.config["SESSION_PERMANENT"] = False
+    app.config["SESSION_TYPE"] = "filesystem"
+    Session(app)
+    
+    app.run()
+    
+
 
 @sock_vuln.route('/vuln')
 def echo(sock_vuln):
@@ -107,7 +114,3 @@ def getshostinfo(sock):
         #sock.close()
         return
 
-if __name__ == "__main__":
-    '''Run application'''
-    app.run()
-    
