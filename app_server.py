@@ -117,9 +117,9 @@ def deletealarm():
             print(api.delete_alert(args["id"]))
             return "alarm deleted"
         except shodan.APIError:
-             return "error, alarm not deleted"
+            return "error, alarm not deleted"
     return "error, alarm not deleted"
-        
+   
 @app.route("/createalarm", methods=["POST", "GET"])
 def createalarm():
     '''Create alarm'''
@@ -127,15 +127,14 @@ def createalarm():
         args = request.json
         try:
             api = shodan.Shodan(session["shodanid"])
-            if (args["name"]==""):
+            if args["name"]=="":
                 print(api.create_alert("alert",args["ip"]))
             else:
                 print(api.create_alert(args["name"],args["ip"]))
             return "alarm created"
         except shodan.APIError:
-             return "error, alarm not created"
-    return "error, alarm not created"
-        
+            return "error, alarm not created"
+    return "error, alarm not created" 
 
 
 @sock.route('/gethostinfo')
