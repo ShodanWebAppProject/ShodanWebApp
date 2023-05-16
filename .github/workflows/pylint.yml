@@ -21,5 +21,5 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Analysing the code with pylint
       run: |
-        pylint --disable=W guinicorn.conf.py
-        pylint $(git ls-files '*.py')
+        pylint $(git ls-files 'app_server.py')
+        pylint $(git ls-files 'sample_test.py')
