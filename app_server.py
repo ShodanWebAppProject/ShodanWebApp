@@ -14,7 +14,7 @@ sock = Sock(app)
 
 # Session
 app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "filesystem"
+#app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 @sock_vuln.route('/vuln')
