@@ -70,9 +70,11 @@
 								document.getElementById("alarmList").innerHTML+="<b>"+filters+"</b>: "+jsonResponse[alertJson]["filters"][filters]+"<br>";
 							}
 							document.getElementById("alarmList").innerHTML+="<b>Has trigger</b>: "+jsonResponse[alertJson]["has_triggers"]+"<br>";
+							document.getElementById("alarmList").innerHTML+="<b>Trigger:</b> ";
 							for (var triggers in jsonResponse[alertJson]["triggers"]){
-								document.getElementById("alarmList").innerHTML	+="<b>"+triggers+"</b>: "+jsonResponse[alertJson]["triggers"][triggers]+"<br>";
+								document.getElementById("alarmList").innerHTML	+=triggers+" ";
 							}
+							document.getElementById("alarmList").innerHTML+="<br>";
 							document.getElementById("alarmList").innerHTML	+="<b>Notifiers</b>: "+JSON.stringify(jsonResponse[alertJson]["notifiers"])+"<br>";
 							document.getElementById("alarmList").innerHTML+="<b>Size</b>: "+jsonResponse[alertJson]["size"]+"<br>";
 							//document.getElementById("alarmList").innerHTML+="<br>";
