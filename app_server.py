@@ -119,7 +119,7 @@ def deletealarm():
         except shodan.APIError:
             return "error, alarm not deleted"
     return "error, alarm not deleted"
-   
+
 @app.route("/createalarm", methods=["POST", "GET"])
 def createalarm():
     '''Create alarm'''
@@ -134,7 +134,7 @@ def createalarm():
             return "alarm created"
         except shodan.APIError:
             return "error, alarm not created"
-    return "error, alarm not created" 
+    return "error, alarm not created"
 
 
 @sock.route('/gethostinfo')
