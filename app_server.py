@@ -157,23 +157,23 @@ def getshostinfo(socket_info):
     try:
         socket_info.send("<br><h5><b>IP INFORMATION</b></h5><br>")
         try:
-            if host['ip_str'] != None:
+            if host['ip_str'] is not None:
                 socket_info.send("<b>IP</b>: "+host['ip_str']+"<br>")
         except shodan.APIError:
             print("Not find ip string")
         try:
-            if host.get('org', 'n/a') != None:
+            if host.get('org', 'n/a') is not None:
                 socket_info.send("<b>Organization</b>: "+host.get('org', 'n/a')+"<br>")
         except shodan.APIError:
             print("Not find organization")
         try:
-            if host.get('os', 'n/a') != None:
+            if host.get('os', 'n/a') is not None:
                 socket_info.send("<b>Operating System</b>: "+host.get('os', 'n/a')+"<br>")
-        except shodan.APIError: 
+        except shodan.APIError:
             print("Not find os")
         return
-    except request.routing_exception as e:
-        print(e.code+':An error occured')
+    except request.routing_exception as e_routing:
+        print(e_routing.code+':An error occured')
         socket_info.send("<br><h5><b>ERROR IN REQUEST</b></h5>")
         #sock.close()
         return
