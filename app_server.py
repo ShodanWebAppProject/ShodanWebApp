@@ -150,7 +150,7 @@ def createalarm():
             print("alert:"+args["name"]+" "+args["ip"])
             if args["name"]=="":
                 alarm_dict=api.create_alert("alert:"+args["ip"],args["ip"])
-                print(alarm_dict)          
+                print(alarm_dict)        
             else:
                 alarm_dict=api.create_alert(args["name"],args["ip"])
                 print(alarm_dict)
