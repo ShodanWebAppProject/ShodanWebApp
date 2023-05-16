@@ -1,4 +1,4 @@
-# Gunicorn configuration file
+''' Gunicorn configuration file '''
 import multiprocessing
 
 max_requests = 1000
