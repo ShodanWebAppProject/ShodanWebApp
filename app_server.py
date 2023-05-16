@@ -5,6 +5,7 @@
 from flask import Flask, render_template, redirect, request, session
 from flask_session import Session
 from flask_sock import Sock
+import json
 import shodan
 import requests
 
@@ -96,7 +97,8 @@ def getalert():
     '''Request get for alert'''
     api = shodan.Shodan(session["shodanid"])
     list_alert=api.alerts()
-    return print_dict(list_alert)
+    #return print_dict(list_alert)
+    return list_alert
 
 @app.route('/alarm')
 def alarm():
@@ -104,6 +106,38 @@ def alarm():
     if not session.get("shodanid"):
         return redirect("/login")
     return render_template('alarm.html')
+
+@app.route("/deletealarm", methods=["POST", "GET"])
+def deletealarm():
+    '''Delete alarm'''
+    if request.method == "POST":
+        args = request.json
+        print(args["id"])
+        try:
+            api = shodan.Shodan(session["shodanid"])
+            print(api.delete_alert(args["id"]))
+            return "alarm deleted"
+        except shodan.APIError:
+             return "error, alarm not deleted"
+    return "error, alarm not deleted"
+        
+@app.route("/createalarm", methods=["POST", "GET"])
+def createalarm():
+    '''Create alarm'''
+    if request.method == "POST":
+        args = request.json
+        try:
+            api = shodan.Shodan(session["shodanid"])
+            if (args["name"]==""):
+                print(api.create_alert("alert",args["ip"]))
+            else:
+                print(api.create_alert(args["name"],args["ip"]))
+            return "alarm created"
+        except shodan.APIError:
+             return "error, alarm not created"
+    return "error, alarm not created"
+        
+
 
 @sock.route('/gethostinfo')
 def getshostinfo(socket_info):

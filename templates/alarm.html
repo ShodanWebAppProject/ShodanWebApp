@@ -13,13 +13,71 @@
 
 		
 		<script>
+			function createAlarm(){
+				var xhttp = new XMLHttpRequest();
+				//console.log("Create alarm: "+idAlarm);
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						var response = xhttp.responseText;
+						console.log(response);
+						document.getElementById("alarmList").innerHTML="";
+						loadAlarm();
+					}
+				};
+				xhttp.open("POST", "/createalarm", true);
+				xhttp.setRequestHeader('Content-Type', 'application/json');
+				xhttp.send(JSON.stringify({
+					"ip": "\""+document.getElementById("inputAlarmIp").value+"\"",
+					"name": "\""+document.getElementById("inputNameAlarm").value+"\""
+				}));
+			}
+
+			function deleteAlarm(idAlarm){
+				var xhttp = new XMLHttpRequest();
+				console.log("Delete alarm: "+idAlarm);
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						var response = xhttp.responseText;
+						console.log(response);
+						document.getElementById("alarmList").innerHTML="";
+						loadAlarm();
+					}
+				};
+				xhttp.open("POST", "/deletealarm", true);
+				xhttp.setRequestHeader('Content-Type', 'application/json');
+				xhttp.send(JSON.stringify({
+					"id": idAlarm
+				}));
+			}
+
 			function loadAlarm(){
 				var xhttp = new XMLHttpRequest();
 				console.log("load alarm");
 				xhttp.onreadystatechange = function() {
 					if (this.readyState == 4 && this.status == 200) {
 						var response = xhttp.responseText;
-						document.getElementById("alarmList").innerHTML=response;
+						//document.getElementById("alarmList").innerHTML+=response;
+						jsonResponse=JSON.parse(response);
+						//console.log(jsonResponse);
+						for (var alertJson in jsonResponse){
+							document.getElementById("alarmList").innerHTML+="<b>Name alert</b>: "+jsonResponse[alertJson]["name"]+"<br>";
+							document.getElementById("alarmList").innerHTML+="<b>Id</b>: "+jsonResponse[alertJson]["id"]+"<br>";
+							document.getElementById("alarmList").innerHTML+="<b>Created</b>: "+jsonResponse[alertJson]["created"]+"<br>";
+							document.getElementById("alarmList").innerHTML+="<b>Expiration</b>: "+jsonResponse[alertJson]["expiration"]+"<br>";
+							document.getElementById("alarmList").innerHTML+="<b>Expires</b>: "+jsonResponse[alertJson]["expires"]+"<br>";
+							for (var filters in jsonResponse[alertJson]["filters"]){
+								document.getElementById("alarmList").innerHTML+="<b>"+filters+"</b>: "+jsonResponse[alertJson]["filters"][filters]+"<br>";
+							}
+							document.getElementById("alarmList").innerHTML+="<b>Has trigger</b>: "+jsonResponse[alertJson]["has_triggers"]+"<br>";
+							for (var triggers in jsonResponse[alertJson]["triggers"]){
+								document.getElementById("alarmList").innerHTML	+="<b>"+triggers+"</b>: "+jsonResponse[alertJson]["triggers"][triggers]+"<br>";
+							}
+							document.getElementById("alarmList").innerHTML	+="<b>Notifiers</b>: "+JSON.stringify(jsonResponse[alertJson]["notifiers"])+"<br>";
+							document.getElementById("alarmList").innerHTML+="<b>Size</b>: "+jsonResponse[alertJson]["size"]+"<br>";
+							//document.getElementById("alarmList").innerHTML+="<br>";
+							document.getElementById("alarmList").innerHTML+="<button type=\"button\" onclick=\"deleteAlarm	(\'"+jsonResponse[alertJson]["id"]+"\')\" class=\"btn btn-danger\">Delete</button><br><br>";
+						}
+						
 					}
 				};
 
@@ -63,7 +121,16 @@
 			<div class="row marketing">
 				            
 				<div class="col-lg-6">
-					                
+					<div class="mb-3">
+						<label for="inputNameAlarm" class="form-label">Name alarm:</label>
+						<input type="text" class="form-control" id="inputNameAlarm" aria-describedby="inputName">
+						<div id="inputName" class="form-text">Insert the name of the alert to create.</div>
+						<label for="inputAlarmIp" class="form-label">Device IP:</label>
+						<input type="text" class="form-control" id="inputAlarmIp" aria-describedby="inputIP">
+						<div id="inputIP" class="form-text">Insert the ip you want to track.</div>
+					</div>
+					<button type="button" onclick="createAlarm()" class="btn btn-success">Create alarm</button><br><br>
+					<h5><b>List alarm created:</b></h5>
 					<div id="alarmList"></div>
 				</div>
 				        
