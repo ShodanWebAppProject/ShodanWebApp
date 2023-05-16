@@ -121,24 +121,24 @@ def deletealarm():
     return "error, alarm not deleted"
 
 def alert_enable_trigger(alert_id):
-        """Enable a trigger for the alert"""
-        # Get the list
-        api = shodan.Shodan(session["shodanid"])
-        try:
-            api.enable_alert_trigger(alert_id, "new_service")
-            api.enable_alert_trigger(alert_id, "malware")
-            api.enable_alert_trigger(alert_id, "vulnerable")
-        except shodan.APIError:
-            raise shodan.APIError
-        # We recommend enabling the triggers:
-        # new_service
-        # malware
-        # open_database
-        # iot
-        # vulnerable
-        # ssl_expired
-        # industrial_control_system
-        # internet_scanner
+    """Enable a trigger for the alert"""
+    # Get the list
+    api = shodan.Shodan(session["shodanid"])
+    try:
+        api.enable_alert_trigger(alert_id, "new_service")
+        api.enable_alert_trigger(alert_id, "malware")
+        api.enable_alert_trigger(alert_id, "vulnerable")
+    except Exception as exc:
+        raise shodan.APIError from exc
+    # We recommend enabling the triggers:
+    # new_service
+    # malware
+    # open_database
+    # iot
+    # vulnerable
+    # ssl_expired
+    # industrial_control_system
+    # internet_scanner
 
 @app.route("/createalarm", methods=["POST", "GET"])
 def createalarm():
@@ -150,7 +150,7 @@ def createalarm():
             print("alert:"+args["name"]+" "+args["ip"])
             if args["name"]=="":
                 alarm_dict=api.create_alert("alert:"+args["ip"],args["ip"])
-                print(alarm_dict)               
+                print(alarm_dict)          
             else:
                 alarm_dict=api.create_alert(args["name"],args["ip"])
                 print(alarm_dict)
