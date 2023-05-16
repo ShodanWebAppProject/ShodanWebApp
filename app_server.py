@@ -5,7 +5,6 @@
 from flask import Flask, render_template, redirect, request, session
 from flask_session import Session
 from flask_sock import Sock
-import json
 import shodan
 import requests
 
