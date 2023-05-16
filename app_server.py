@@ -40,18 +40,18 @@ def echo(socket_vuln):
         return
     try:
         socket_vuln.send("<br><h5><b>VULN</b></h5><br>")
-        for item in host['vulns']:
-            cve = item.replace('!', '')
-            socket_vuln.send('<b>Vulns</b>:'+item+'<br>')
-            exploits = api.exploits.search(cve)
-            for item in exploits['matches']:
-                if item.get('cve')[0] == cve:
-                    socket_vuln.send("<br><b>Description:</b><br>"+
-                                    item.get('description')+"<br><br>")
+        if 'vulns' in host:
+            for item in host['vulns']:
+                cve = item.replace('!', '')
+                socket_vuln.send('<b>Vulns</b>:'+item+'<br>')
+                exploits = api.exploits.search(cve)
+                for item in exploits['matches']:
+                    if item.get('cve')[0] == cve:
+                        socket_vuln.send("<br><b>Description:</b><br>"+
+                                        item.get('description')+"<br><br>")
+        else:
+            socket_vuln.send("<br><b>Vuln not found</b><br>")
         return
-    except request.routing_exception:
-        print('An error occurred')
-        socket_vuln.send("<br><h5><b>ERROR IN ROUTING REQUEST</b></h5>")
     except shodan.APIError:
         print('An error occurred')
         socket_vuln.send("<br><h5><b>ERROR IN SHODAN REQUEST</b></h5>")
@@ -156,12 +156,24 @@ def getshostinfo(socket_info):
 
     try:
         socket_info.send("<br><h5><b>IP INFORMATION</b></h5><br>")
-        socket_info.send("<b>IP</b>: "+host['ip_str']+"<br>")
-        socket_info.send("<b>Organization</b>: "+host.get('org', 'n/a')+"<br>")
-        socket_info.send("<b>Operating System</b>: "+host.get('os', 'n/a')+"<br>")
+        try:
+            if host['ip_str'] != None:
+                socket_info.send("<b>IP</b>: "+host['ip_str']+"<br>")
+        except shodan.APIError:
+            print("Not find ip string")
+        try:
+            if host.get('org', 'n/a') != None:
+                socket_info.send("<b>Organization</b>: "+host.get('org', 'n/a')+"<br>")
+        except shodan.APIError:
+            print("Not find organization")
+        try:
+            if host.get('os', 'n/a') != None:
+                socket_info.send("<b>Operating System</b>: "+host.get('os', 'n/a')+"<br>")
+        except shodan.APIError: 
+            print("Not find os")
         return
-    except request.routing_exception :
-        print('An error occured')
+    except request.routing_exception as e:
+        print(e.code+':An error occured')
         socket_info.send("<br><h5><b>ERROR IN REQUEST</b></h5>")
         #sock.close()
         return
