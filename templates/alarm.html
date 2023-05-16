@@ -26,9 +26,10 @@
 				};
 				xhttp.open("POST", "/createalarm", true);
 				xhttp.setRequestHeader('Content-Type', 'application/json');
+				console.log("ip:"+document.getElementById("inputAlarmIp").value+" name: "+document.getElementById("inputNameAlarm").value);
 				xhttp.send(JSON.stringify({
-					"ip": "\""+document.getElementById("inputAlarmIp").value+"\"",
-					"name": "\""+document.getElementById("inputNameAlarm").value+"\""
+					"ip": document.getElementById("inputAlarmIp").value,
+					"name": document.getElementById("inputNameAlarm").value
 				}));
 			}
 

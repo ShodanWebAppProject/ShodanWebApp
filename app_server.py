@@ -14,7 +14,7 @@ sock = Sock(app)
 
 # Session
 app.config["SESSION_PERMANENT"] = False
-#app.config["SESSION_TYPE"] = "filesystem"
+app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 @sock_vuln.route('/vuln')
@@ -127,13 +127,14 @@ def createalarm():
         args = request.json
         try:
             api = shodan.Shodan(session["shodanid"])
+            print("alert:"+args["name"]+" "+args["ip"])
             if args["name"]=="":
-                print(api.create_alert("alert",args["ip"]))
+                print(api.create_alert("alert:"+args["ip"],args["ip"]))
             else:
                 print(api.create_alert(args["name"],args["ip"]))
             return "alarm created"
         except shodan.APIError:
-            return "error, alarm not created"
+            return str(shodan.APIError)+" error, alarm not created"
     return "error, alarm not created"
 
 
