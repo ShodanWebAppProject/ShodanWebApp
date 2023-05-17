@@ -82,6 +82,13 @@
 				};
 				
 				websocketVuln.onmessage = function(evt) {
+					if (evt.data.includes('<b>Vulns</b>:')){
+						if (document.getElementById("numVuln").innerHTML==""){
+							document.getElementById("numVuln").innerHTML="<b>Numero vulnerabilità</b> = 1";
+						}else{
+							document.getElementById("numVuln").innerHTML="<b>Numero vulnerabilità</b> = "+eval(parseInt(document.getElementById("numVuln").innerHTML.split(" = ")[1])+1);
+						}
+					}
 					document.getElementById("outputVuln").innerHTML+=evt.data;
 				};
 				
@@ -102,6 +109,7 @@
 			function deleteVulnInfo()
 			{
 				document.getElementById("outputVuln").innerHTML="";
+				document.getElementById("numVuln").innerHTML="";
 			}
 
 		</script>
@@ -162,6 +170,9 @@
 							<button type="button" onclick="runWebSocketVuln()" class="btn btn-primary">Run</button>
 							<button type="button" onclick="deleteVulnInfo()" class="btn btn-primary">Cancella</button>
 						</div>
+						<br>
+						<div id="numVuln"></div>
+						<br>
 						<div id="outputVuln"></div>
 					</form>
 				</div>
