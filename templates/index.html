@@ -112,10 +112,27 @@
 				document.getElementById("numVuln").innerHTML="";
 			}
 
+			function alertoption()
+			{
+				var xhttp = new XMLHttpRequest();
+				console.log("check load page alarm");
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						var response = xhttp.responseText;
+						if (response!="oss"){
+							document.getElementById("alarmnavbar").innerHTML='<a href="/alarm" class="nav-link">Alarm</a>';
+						}
+					}
+				};
+
+				xhttp.open("GET", "/getplan", true);
+				xhttp.send();
+			}
+
 		</script>
 	</head>
 
-	<body>
+	<body onload="alertoption()">
 		    
 		<div class="container">
 			        
@@ -129,12 +146,12 @@
 						<span class="fs-4"><b>SHODAN MONITORING APP</b></span>
 					</a>
 
-					<ul class="nav nav-pills">
+					<ul class="nav nav-pills" >
 						<li class="nav-item">
 							<a href="/" class="nav-link active" aria-current="page">Home</a>
 						</li>
-						<li class="nav-item">
-							<a href="/alarm" class="nav-link">Alarm</a>
+						<li class="nav-item" id="alarmnavbar">
+							
 						</li>
 						<li class="nav-item">
 							<a href="/logout" class="nav-link">Logout</a>

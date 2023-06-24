@@ -91,6 +91,14 @@ def print_dict(list_dict):
         value_dict+="<br>"
     return value_dict
 
+@app.route('/getplan/')
+def getplan():
+    '''Request get for plan key'''
+    api = shodan.Shodan(session["shodanid"])
+    plan = api.info()['plan']
+    print("plan: "+plan)
+    return plan
+
 @app.route('/getalert/')
 def getalert():
     '''Request get for alert'''
