@@ -21,7 +21,7 @@ spec:
         "beta.kubernetes.io/os": linux
       containers:
       - name: shodanimage
-        image: shodanregistry.azurecr.io/shodanimage:v1 
+        image: shodanregistry.azurecr.io/shodanimage:latest 
         ports:
         - containerPort: 50505
         resources:
