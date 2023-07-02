@@ -10,6 +10,8 @@ kind: Deployment
 metadata:
   name: shodanimage
   namespace: shodanspace
+  annotations:
+    instrumentation.opentelemetry.io/inject-python: "true"
 spec:
   replicas: 1
   selector:
