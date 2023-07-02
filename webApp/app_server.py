@@ -2,24 +2,18 @@
 
 '''app_service for shodan web app'''
 
-from flask import Flask, redirect, render_template, session, url_for, request, jsonify,_request_ctx_stack, g
+from flask import Flask,redirect,render_template,session,url_for,request
 
 from flask_session import Session
 from flask_sock import Sock
 import shodan
 import requests
 
-from functools import wraps
-import json
 from os import environ as env
 from urllib.parse import quote_plus, urlencode
-from urllib.request import urlopen
 
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
-from jose import jwt
-
-import http.client
 
 
 ENV_FILE = find_dotenv()
@@ -123,7 +117,7 @@ def shodaid():
         #payload = {"user_metadata": {"shodanID": "'"+session["access_token"]+"'"}}
         payload = "{\"user_metadata\": {\"shodanID\": \""+session["shodanid"]+"\"}}"
 
-        res = requests.patch(url, data=payload, headers=headers)
+        requests.patch(url, data=payload, headers=headers, timeout=5)
 
         return redirect("/")
     return render_template('shodanid.html')
@@ -165,7 +159,7 @@ def callback():
 
     url='https://dev-m2sie3j46ouu7opn.us.auth0.com/oauth/token'
     payload = {"client_id":"A41DU0dXZPtn6pqqgb2A49JUXSfYqTNc","client_secret":"n0s3aS1MXVDjnGlU1HetFKfeEsnB687r2StKlLZwkmM-LgM3XPTvtuckfnozY-c1","audience":"https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/","grant_type":"client_credentials"}
-    res = requests.post(url, data=payload)
+    res = requests.post(url, data=payload, timeout=5)
     
     text=str(res.text)
     access_token=text.split(",")[0].split(":")[1].split('"')[1]
@@ -174,7 +168,7 @@ def callback():
     
     urlget= 'https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/users/'+session["client_id"]
     headerget={ 'authorization': 'Bearer '+ session["access_token"],'content-type':'application/json'} 
-    resget = requests.get(urlget, headers=headerget)
+    resget = requests.get(urlget, headers=headerget, timeout=5)
     print(str(resget.text))
 
     try:
@@ -191,9 +185,8 @@ def getshodanid():
     '''Request get for shodan ID'''
     if session.get("user") and session.get("shodanid"):  
         return session["shodanid"]
-    else: 
-        print("not present a user session")
-        return redirect("/login")
+    print("not present a user session")
+    return redirect("/login")
 
 def print_dict(list_dict):
     '''Print list of dictionary'''
@@ -212,9 +205,8 @@ def getplan():
         plan = api.info()['plan']
         print("plan: "+plan)
         return plan
-    else:
-        print("not present a user session")
-        return redirect("/login")
+    print("not present a user session")
+    return redirect("/login")
 
 @app.route('/getalert/')
 def getalert():
@@ -224,9 +216,8 @@ def getalert():
         list_alert=api.alerts()
         #return print_dict(list_alert)
         return list_alert
-    else:
-        print("not present a user session")
-        return redirect("/login")
+    print("not present a user session")
+    return redirect("/login")
 
 @app.route('/alarm')
 def alarm():
