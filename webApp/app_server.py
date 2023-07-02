@@ -166,15 +166,16 @@ def callback():
     session["access_token"] = access_token
     session["user"] = token
     urlget='https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/users/'+session["client_id"]
-    headerget={ 'authorization': 'Bearer '+ session["access_token"],'content-type':'application/json'} 
+    headerget={ 'authorization': 'Bearer '+ session["access_token"],
+               'content-type':'application/json'} 
     resget = requests.get(urlget, headers=headerget, timeout=5)
     print(str(resget.text))
     try:
         shodanid=str(resget.text).split('shodanID":')[1].split("}")[0]
         print("shodanID: "+shodanid)
         session['shodanid']=shodaid
-    except IndexError as E:
-        print("shodanid da inserire: "+E)
+    except IndexError as nofindshodanid:
+        print("shodanid da inserire: "+nofindshodanid)
     return redirect("/")
 
 @app.route('/getshodanid/')
