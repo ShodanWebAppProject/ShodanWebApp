@@ -2,6 +2,8 @@
 
 '''app_service for shodan web app'''
 
+from authlib.integrations.flask_client import OAuth
+from os import environ as env
 from flask import Flask,redirect,render_template,session,url_for,request
 
 from flask_session import Session
@@ -9,10 +11,9 @@ from flask_sock import Sock
 import shodan
 import requests
 
-from os import environ as env
 from urllib.parse import quote_plus, urlencode
 
-from authlib.integrations.flask_client import OAuth
+
 from dotenv import find_dotenv, load_dotenv
 
 
@@ -112,7 +113,8 @@ def shodaid():
         session["shodanid"] = request.form.get("shodanid")
 
         url='https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/users/'+session["client_id"]
-        headers = {'Authorization': 'Bearer '+session["access_token"], 'Content-Type':'application/json'}
+        headers = {'Authorization': 'Bearer '+session["access_token"], 
+                   'Content-Type':'application/json'}
         #print("'"+session["access_token"]+"'")
         #payload = {"user_metadata": {"shodanID": "'"+session["access_token"]+"'"}}
         payload = "{\"user_metadata\": {\"shodanID\": \""+session["shodanid"]+"\"}}"
@@ -155,7 +157,9 @@ def callback():
     client_id=texttoken.split("'sub': '")[1].split("'")[0]
     session["client_id"] = client_id
     url='https://dev-m2sie3j46ouu7opn.us.auth0.com/oauth/token'
-    payload = {"client_id":"A41DU0dXZPtn6pqqgb2A49JUXSfYqTNc","client_secret":"n0s3aS1MXVDjnGlU1HetFKfeEsnB687r2StKlLZwkmM-LgM3XPTvtuckfnozY-c1","audience":"https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/","grant_type":"client_credentials"}
+    payload = {"client_id":"A41DU0dXZPtn6pqqgb2A49JUXSfYqTNc",
+               "client_secret":"n0s3aS1MXVDjnGlU1HetFKfeEsnB687r2StKlLZwkmM-LgM3XPTvtuckfnozY-c1",
+               "audience":"https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/","grant_type":"client_credentials"}
     res = requests.post(url, data=payload, timeout=5)
     text=str(res.text)
     access_token=text.split(",")[0].split(":")[1].split('"')[1]
@@ -234,9 +238,8 @@ def deletealarm():
             except shodan.APIError:
                 return "error, alarm not deleted"
         return "error, alarm not deleted"
-    else:
-        print("not present a user session")
-        return redirect("/login")
+    print("not present a user session")
+    return redirect("/login")
 
 def alert_enable_trigger(alert_id):
     """Enable a trigger for the alert"""
@@ -278,9 +281,9 @@ def createalarm():
             except shodan.APIError:
                 return str(shodan.APIError)+" error, alarm not created"
         return "error, alarm not created"
-    else:
-        print("not present a user session")
-        return redirect("/login")
+    print("not present a user session")
+    return redirect("/login")
+        
 
 
 @sock.route('/gethostinfo')
