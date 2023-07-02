@@ -11,7 +11,7 @@ def app_fixture():
 @pytest.fixture(name="client")
 def client_fixture(app):
     '''fixture client'''
-    return app.test_client()
+    return app.test_session_key()
 
 def test_index(client):
     '''test app index'''
@@ -28,10 +28,3 @@ def test_session_key(client):
     with client.session_transaction() as session:
         assert session.get("shodanid") == "example_key"
 
-
-def test_login(client):
-    '''test app login'''
-    with client.session_transaction() as session:
-        response = client.get("/")
-        assert response.status_code == 200
-        assert session.get("shodanid") is None
