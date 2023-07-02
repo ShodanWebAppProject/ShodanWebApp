@@ -145,39 +145,32 @@ def login():
     '''Session login'''
     return oauth.auth0.authorize_redirect(
         redirect_uri=url_for("callback", _external=True)
-    )  
+    )
 
 @app.route("/callback", methods=["GET", "POST"])
 def callback():
     '''callback'''
     token = oauth.auth0.authorize_access_token()
-    
     texttoken=str(token)
-    
     client_id=texttoken.split("'sub': '")[1].split("'")[0]
     session["client_id"] = client_id
-
     url='https://dev-m2sie3j46ouu7opn.us.auth0.com/oauth/token'
     payload = {"client_id":"A41DU0dXZPtn6pqqgb2A49JUXSfYqTNc","client_secret":"n0s3aS1MXVDjnGlU1HetFKfeEsnB687r2StKlLZwkmM-LgM3XPTvtuckfnozY-c1","audience":"https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/","grant_type":"client_credentials"}
     res = requests.post(url, data=payload, timeout=5)
-    
     text=str(res.text)
     access_token=text.split(",")[0].split(":")[1].split('"')[1]
     session["access_token"] = access_token
     session["user"] = token
-    
     urlget= 'https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/users/'+session["client_id"]
     headerget={ 'authorization': 'Bearer '+ session["access_token"],'content-type':'application/json'} 
     resget = requests.get(urlget, headers=headerget, timeout=5)
     print(str(resget.text))
-
     try:
         shodanid=str(resget.text).split('shodanID":')[1].split("}")[0]
         print("shodanID: "+shodanid)
         session['shodanid']=shodaid
     except IndexError as e:
-        print("shodanid da inserire")
-
+        print("shodanid da inserire: "+e)
     return redirect("/")
 
 @app.route('/getshodanid/')
