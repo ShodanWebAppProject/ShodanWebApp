@@ -15,7 +15,7 @@ def client_fixture(app):
 
 def test_index(client):
     '''test app index'''
-    response = client.get("/login")
+    response = client.get("/")
     assert response.status_code == 200
 
 def test_session_key(client):
@@ -32,6 +32,6 @@ def test_session_key(client):
 def test_login(client):
     '''test app login'''
     with client.session_transaction() as session:
-        response = client.get("/login")
+        response = client.get("/")
         assert response.status_code == 200
         assert session.get("shodanid") is None
