@@ -5,3 +5,11 @@ requests
 pytest
 gunicorn
 shodan
+
+Flask-Bootstrap==3.3.7.1
+Flask-JSON==0.3.3
+python-dotenv>=0.19.2
+authlib>=1.0
+python-jose
+flask-cors
+six	

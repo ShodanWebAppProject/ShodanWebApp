@@ -2,38 +2,80 @@
 
 '''app_service for shodan web app'''
 
-from flask import Flask, render_template, redirect, request, session
+from flask import Flask, redirect, render_template, session, url_for, request, jsonify,_request_ctx_stack, g
+
 from flask_session import Session
 from flask_sock import Sock
 import shodan
 import requests
 
+from functools import wraps
+import json
+from os import environ as env
+from urllib.parse import quote_plus, urlencode
+from urllib.request import urlopen
+
+from authlib.integrations.flask_client import OAuth
+from dotenv import find_dotenv, load_dotenv
+from jose import jwt
+
+import http.client
+
+
+ENV_FILE = find_dotenv()
+if ENV_FILE:
+    load_dotenv(ENV_FILE)
+
+
+AUTH0_DOMAIN = env.get("AUTH0_DOMAIN")
+AUTH0_AUDIENCE = env.get("AUTH0_AUDIENCE")
+ALGORITHMS = ["RS256"]
+
+
 app = Flask(__name__)
 sock_vuln = Sock(app)
 sock = Sock(app)
+app.secret_key = "siufhjdipoofp"
+
 
 # Session
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
+oauth = OAuth(app)
+
+oauth.register(
+    "auth0",
+    client_id=env.get("AUTH0_CLIENT_ID"),
+    client_secret=env.get("AUTH0_CLIENT_SECRET"),
+    client_kwargs={
+        "scope": "openid profile email",
+    },
+    connection="email",
+    server_metadata_url=f'https://{env.get("AUTH0_DOMAIN")}/.well-known/openid-configuration',
+)
+
+
 @sock_vuln.route('/vuln')
 def echo(socket_vuln):
     '''Web-socket connection for obtain information about ip vuln'''
 
-    app.logger.info("Connection accepted")
+    #app.logger.info("Connection accepted")
 
     api = shodan.Shodan(session["shodanid"])
 
     target = socket_vuln.receive()
 
-    dns_resolve = f"https://api.shodan.io/dns/resolve?hostnames={target}&key={session['shodanid']}"
+    #print(session['shodanid'])
+    #dns_resolve = "https://api.shodan.io/dns/resolve?hostnames="+target+"&key="+session['shodanid']
     print("Target: " + target)
-
     try:
-        resolved = requests.get(dns_resolve,timeout=5)
-        host_ip = resolved.json()[target]
-        host = api.host(host_ip)
+        #resolved = requests.get(dns_resolve)
+        #print("resolved: "+str(resolved.text))
+        #host_ip = resolved.json()[target]
+        #print(host_ip)
+        host = api.host(target)
     except shodan.APIError :
         print("Error in resolving IP")
         socket_vuln.send("<br><h5><b>ERROR RESOLVING IP</b></h5>")
@@ -59,28 +101,99 @@ def echo(socket_vuln):
 @app.route('/')
 def main():
     '''index render'''
-    if not session.get("shodanid"):
+    if not session.get("user"):
         return redirect("/login")
+    if not session.get("shodanid"):
+        return redirect("/shodaid")
+    #print(session.get("user"))
+    #print(session.get("shodanid"))
     return render_template('index.html')
+
+@app.route('/shodaid', methods=["POST", "GET"])
+def shodaid():
+    '''index render'''
+    if not session.get("user"):
+        return redirect("/login")
+    if request.method == "POST":
+        session["shodanid"] = request.form.get("shodanid")
+
+        url='https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/users/'+session["client_id"]
+        headers = {'Authorization': 'Bearer '+session["access_token"], 'Content-Type':'application/json'}
+        #print("'"+session["access_token"]+"'")
+        #payload = {"user_metadata": {"shodanID": "'"+session["access_token"]+"'"}}
+        payload = "{\"user_metadata\": {\"shodanID\": \""+session["shodanid"]+"\"}}"
+
+        res = requests.patch(url, data=payload, headers=headers)
+
+        return redirect("/")
+    return render_template('shodanid.html')
+
 
 @app.route("/logout")
 def logout():
     '''Logout from session'''
-    session["shodanid"] = None
-    return redirect("/")
+    session.clear()
+    return redirect(
+        "https://"
+        + env.get("AUTH0_DOMAIN")
+        + "/v2/logout?"
+        + urlencode(
+            {
+                "returnTo": url_for("main", _external=True),
+                "client_id": env.get("AUTH0_CLIENT_ID"),
+            },
+            quote_via=quote_plus,
+        )
+    )
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
     '''Session login'''
-    if request.method == "POST":
-        session["shodanid"] = request.form.get("shodanid")
-        return redirect("/")
-    return render_template("login.html")
+    return oauth.auth0.authorize_redirect(
+        redirect_uri=url_for("callback", _external=True)
+    )  
+
+@app.route("/callback", methods=["GET", "POST"])
+def callback():
+    '''callback'''
+    token = oauth.auth0.authorize_access_token()
+    
+    texttoken=str(token)
+    
+    client_id=texttoken.split("'sub': '")[1].split("'")[0]
+    session["client_id"] = client_id
+
+    url='https://dev-m2sie3j46ouu7opn.us.auth0.com/oauth/token'
+    payload = {"client_id":"A41DU0dXZPtn6pqqgb2A49JUXSfYqTNc","client_secret":"n0s3aS1MXVDjnGlU1HetFKfeEsnB687r2StKlLZwkmM-LgM3XPTvtuckfnozY-c1","audience":"https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/","grant_type":"client_credentials"}
+    res = requests.post(url, data=payload)
+    
+    text=str(res.text)
+    access_token=text.split(",")[0].split(":")[1].split('"')[1]
+    session["access_token"] = access_token
+    session["user"] = token
+    
+    urlget= 'https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/users/'+session["client_id"]
+    headerget={ 'authorization': 'Bearer '+ session["access_token"],'content-type':'application/json'} 
+    resget = requests.get(urlget, headers=headerget)
+    print(str(resget.text))
+
+    try:
+        shodanid=str(resget.text).split('shodanID":')[1].split("}")[0]
+        print("shodanID: "+shodanid)
+        session['shodanid']=shodaid
+    except IndexError as e:
+        print("shodanid da inserire")
+
+    return redirect("/")
 
 @app.route('/getshodanid/')
 def getshodanid():
     '''Request get for shodan ID'''
-    return session["shodanid"]
+    if session.get("user") and session.get("shodanid"):  
+        return session["shodanid"]
+    else: 
+        print("not present a user session")
+        return redirect("/login")
 
 def print_dict(list_dict):
     '''Print list of dictionary'''
@@ -94,39 +207,52 @@ def print_dict(list_dict):
 @app.route('/getplan/')
 def getplan():
     '''Request get for plan key'''
-    api = shodan.Shodan(session["shodanid"])
-    plan = api.info()['plan']
-    print("plan: "+plan)
-    return plan
+    if session.get("user") and session.get("shodanid"):
+        api = shodan.Shodan(session["shodanid"])
+        plan = api.info()['plan']
+        print("plan: "+plan)
+        return plan
+    else:
+        print("not present a user session")
+        return redirect("/login")
 
 @app.route('/getalert/')
 def getalert():
     '''Request get for alert'''
-    api = shodan.Shodan(session["shodanid"])
-    list_alert=api.alerts()
-    #return print_dict(list_alert)
-    return list_alert
+    if session.get("user") and session.get("shodanid"):
+        api = shodan.Shodan(session["shodanid"])
+        list_alert=api.alerts()
+        #return print_dict(list_alert)
+        return list_alert
+    else:
+        print("not present a user session")
+        return redirect("/login")
 
 @app.route('/alarm')
 def alarm():
     '''index alarm'''
-    if not session.get("shodanid"):
+    if not session.get("user") and session.get("shodanid"):
+        print("not present a user session")
         return redirect("/login")
     return render_template('alarm.html')
 
 @app.route("/deletealarm", methods=["POST", "GET"])
 def deletealarm():
     '''Delete alarm'''
-    if request.method == "POST":
-        args = request.json
-        print(args["id"])
-        try:
-            api = shodan.Shodan(session["shodanid"])
-            print(api.delete_alert(args["id"]))
-            return "alarm deleted"
-        except shodan.APIError:
-            return "error, alarm not deleted"
-    return "error, alarm not deleted"
+    if session.get("user") and session.get("shodanid"):
+        if request.method == "POST":
+            args = request.json
+            print(args["id"])
+            try:
+                api = shodan.Shodan(session["shodanid"])
+                print(api.delete_alert(args["id"]))
+                return "alarm deleted"
+            except shodan.APIError:
+                return "error, alarm not deleted"
+        return "error, alarm not deleted"
+    else:
+        print("not present a user session")
+        return redirect("/login")
 
 def alert_enable_trigger(alert_id):
     """Enable a trigger for the alert"""
@@ -151,22 +277,26 @@ def alert_enable_trigger(alert_id):
 @app.route("/createalarm", methods=["POST", "GET"])
 def createalarm():
     '''Create alarm'''
-    if request.method == "POST":
-        args = request.json
-        try:
-            api = shodan.Shodan(session["shodanid"])
-            print("alert:"+args["name"]+" "+args["ip"])
-            if args["name"]=="":
-                alarm_dict=api.create_alert("alert:"+args["ip"],args["ip"])
-                print(alarm_dict)
-            else:
-                alarm_dict=api.create_alert(args["name"],args["ip"])
-                print(alarm_dict)
-            alert_enable_trigger(alarm_dict['id'])
-            return "alarm created"
-        except shodan.APIError:
-            return str(shodan.APIError)+" error, alarm not created"
-    return "error, alarm not created"
+    if session.get("user") and session.get("shodanid"):
+        if request.method == "POST":
+            args = request.json
+            try:
+                api = shodan.Shodan(session["shodanid"])
+                print("alert:"+args["name"]+" "+args["ip"])
+                if args["name"]=="":
+                    alarm_dict=api.create_alert("alert:"+args["ip"],args["ip"])
+                    print(alarm_dict)
+                else:
+                    alarm_dict=api.create_alert(args["name"],args["ip"])
+                    print(alarm_dict)
+                alert_enable_trigger(alarm_dict['id'])
+                return "alarm created"
+            except shodan.APIError:
+                return str(shodan.APIError)+" error, alarm not created"
+        return "error, alarm not created"
+    else:
+        print("not present a user session")
+        return redirect("/login")
 
 
 @sock.route('/gethostinfo')
