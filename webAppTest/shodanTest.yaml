@@ -13,7 +13,7 @@ metadata:
   annotations:
     instrumentation.opentelemetry.io/inject-python: "true"
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: shodanimage
