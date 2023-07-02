@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: shodanspace
+  labels:
+    name: shodanspace
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shodanimage
+  namespace: shodanspace
+  annotations:
+    instrumentation.opentelemetry.io/inject-python: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shodanimage
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: shodanimage
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: shodanimage
+        image: shodanregistry.azurecr.io/shodanimage:latest 
+        ports:
+        - containerPort: 50505
+        resources:
+          requests:
+            cpu: 250m
+          limits:
+            cpu: 500m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shodanimage
+  namespace: shodanspace
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 50505
+  selector:
+    app: shodanimage
