@@ -11,7 +11,7 @@ def app_fixture():
 @pytest.fixture(name="client")
 def client_fixture(app):
     '''fixture client'''
-    return app.test_session_key()
+    return app.test_client()
 
 def test_index(client):
     '''test app index'''
