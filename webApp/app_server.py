@@ -2,7 +2,6 @@
 
 '''app_service for shodan web app'''
 
-from authlib.integrations.flask_client import OAuth
 from os import environ as env
 from flask import Flask,redirect,render_template,session,url_for,request
 
@@ -12,10 +11,10 @@ import shodan
 import requests
 
 from urllib.parse import quote_plus, urlencode
-
-
 from dotenv import find_dotenv, load_dotenv
 
+
+from authlib.integrations.flask_client import OAuth
 
 ENV_FILE = find_dotenv()
 if ENV_FILE:
@@ -113,7 +112,7 @@ def shodaid():
         session["shodanid"] = request.form.get("shodanid")
 
         url='https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/users/'+session["client_id"]
-        headers = {'Authorization': 'Bearer '+session["access_token"], 
+        headers = {'Authorization': 'Bearer '+session["access_token"],
                    'Content-Type':'application/json'}
         #print("'"+session["access_token"]+"'")
         #payload = {"user_metadata": {"shodanID": "'"+session["access_token"]+"'"}}
@@ -158,11 +157,11 @@ def callback():
     session["client_id"] = client_id
     url='https://dev-m2sie3j46ouu7opn.us.auth0.com/oauth/token'
     payload = {"client_id":"A41DU0dXZPtn6pqqgb2A49JUXSfYqTNc",
-               "client_secret":"n0s3aS1MXVDjnGlU1HetFKfeEsnB687r2StKlLZwkmM-LgM3XPTvtuckfnozY-c1",
-               "audience":"https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/","grant_type":"client_credentials"}
+        "client_secret":"n0s3aS1MXVDjnGlU1HetFKfeEsnB687r2StKlLZwkmM-LgM3XPTvtuckfnozY-c1",
+        "audience":"https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/","grant_type":"client_credentials"}
     res = requests.post(url, data=payload, timeout=5)
     text=str(res.text)
-    access_token=text.split(",")[0].split(":")[1].split('"')[1]
+    access_token=text.split(",", maxsplit=1)[0].split(":")[1].split('"')[1]
     session["access_token"] = access_token
     session["user"] = token
     urlget= 'https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/users/'+session["client_id"]
@@ -180,7 +179,7 @@ def callback():
 @app.route('/getshodanid/')
 def getshodanid():
     '''Request get for shodan ID'''
-    if session.get("user") and session.get("shodanid"):  
+    if session.get("user") and session.get("shodanid"): 
         return session["shodanid"]
     print("not present a user session")
     return redirect("/login")
