@@ -3,6 +3,7 @@
 '''app_service for shodan web app'''
 
 from os import environ as env
+from urllib.parse import quote_plus, urlencode
 from flask import Flask,redirect,render_template,session,url_for,request
 
 from flask_session import Session
@@ -10,7 +11,6 @@ from flask_sock import Sock
 import shodan
 import requests
 
-from urllib.parse import quote_plus, urlencode
 from dotenv import find_dotenv, load_dotenv
 
 
@@ -158,13 +158,14 @@ def callback():
     url='https://dev-m2sie3j46ouu7opn.us.auth0.com/oauth/token'
     payload = {"client_id":"A41DU0dXZPtn6pqqgb2A49JUXSfYqTNc",
         "client_secret":"n0s3aS1MXVDjnGlU1HetFKfeEsnB687r2StKlLZwkmM-LgM3XPTvtuckfnozY-c1",
-        "audience":"https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/","grant_type":"client_credentials"}
+        "audience":"https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/",
+        "grant_type":"client_credentials"}
     res = requests.post(url, data=payload, timeout=5)
     text=str(res.text)
     access_token=text.split(",", maxsplit=1)[0].split(":")[1].split('"')[1]
     session["access_token"] = access_token
     session["user"] = token
-    urlget= 'https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/users/'+session["client_id"]
+    urlget='https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/users/'+session["client_id"]
     headerget={ 'authorization': 'Bearer '+ session["access_token"],'content-type':'application/json'} 
     resget = requests.get(urlget, headers=headerget, timeout=5)
     print(str(resget.text))
@@ -172,14 +173,14 @@ def callback():
         shodanid=str(resget.text).split('shodanID":')[1].split("}")[0]
         print("shodanID: "+shodanid)
         session['shodanid']=shodaid
-    except IndexError as e:
-        print("shodanid da inserire: "+e)
+    except IndexError as E:
+        print("shodanid da inserire: "+E)
     return redirect("/")
 
 @app.route('/getshodanid/')
 def getshodanid():
     '''Request get for shodan ID'''
-    if session.get("user") and session.get("shodanid"): 
+    if session.get("user") and session.get("shodanid"):
         return session["shodanid"]
     print("not present a user session")
     return redirect("/login")
@@ -282,8 +283,6 @@ def createalarm():
         return "error, alarm not created"
     print("not present a user session")
     return redirect("/login")
-        
-
 
 @sock.route('/gethostinfo')
 def getshostinfo(socket_info):
