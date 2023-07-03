@@ -200,6 +200,7 @@ def print_dict(list_dict):
 def getplan():
     '''Request get for plan key'''
     if session.get("user") and session.get("shodanid"):
+        print("session plan:"+session["shodanid"])
         api = shodan.Shodan(session["shodanid"])
         plan = api.info()['plan']
         print("plan: "+plan)
@@ -327,5 +328,6 @@ def getshostinfo(socket_info):
         return
 
 if __name__ == "__main__":
-    app.run(ssl_context=("cert.pem", "key.pem"))
+    #app.run(ssl_context=("cert.pem", "key.pem"))
+    app.run()
     
