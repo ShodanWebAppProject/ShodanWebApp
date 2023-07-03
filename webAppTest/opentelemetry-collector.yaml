@@ -18,6 +18,10 @@ spec:
         timeout: 1s
         
     exporters:
+     jaeger:
+        endpoint: jaeger-collector.jaeger.svc.cluster.local:14250
+        tls:
+          insecure: true
       logging:
         verbosity: detailed
         
@@ -26,7 +30,7 @@ spec:
         traces:
           receivers: [otlp]
           processors: []
-          exporters: [logging]
+          exporters: [logging,jaeger]
         metrics:
           receivers: [otlp]
           processors: []
