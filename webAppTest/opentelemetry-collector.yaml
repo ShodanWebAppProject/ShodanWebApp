@@ -2,7 +2,7 @@ apiVersion: opentelemetry.io/v1alpha1
 kind: OpenTelemetryCollector
 metadata:
   name: shodancollector
-  namespace: opentelemetry-operator-system
+  namespace: shodanspace
 spec:
   config: |
     receivers:
