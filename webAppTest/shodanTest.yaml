@@ -32,9 +32,8 @@ spec:
       containers:
       - name: shodanimage
         image: shodanregistry.azurecr.io/shodanimage:latest
-        args: ["--publish","5000:50505"]
         ports:
-        - containerPort: 5000
+        - containerPort: 50505
         resources:
           requests:
             cpu: 250m
@@ -50,5 +49,6 @@ spec:
   type: LoadBalancer
   ports:
   - port: 5000
+  - targetPort: 50505
   selector:
     app: shodanimage
