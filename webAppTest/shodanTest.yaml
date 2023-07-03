@@ -49,6 +49,6 @@ spec:
   type: LoadBalancer
   ports:
   - port: 5000
-  - targetPort: 50505
+    targetPort: 50505
   selector:
     app: shodanimage
