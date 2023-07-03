@@ -26,6 +26,8 @@ spec:
     metadata:
       labels:
         app: shodanimage
+      annotations:
+        instrumentation.opentelemetry.io/inject-python: "true"
     spec:
       nodeSelector:
         "beta.kubernetes.io/os": linux
