@@ -1,3 +1,4 @@
+apiVersion: /api/v2
 kind: Deployment
 metadata:
   name: demo-jaeger
