@@ -31,9 +31,10 @@ spec:
         "beta.kubernetes.io/os": linux
       containers:
       - name: shodanimage
-        image: shodanregistry.azurecr.io/shodanimage:latest 
+        image: shodanregistry.azurecr.io/shodanimage:latest
+        args: ["--publish","5000:50505"]
         ports:
-        - containerPort: 50505
+        - containerPort: 5000
         resources:
           requests:
             cpu: 250m
@@ -48,6 +49,6 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 50505
+  - port: 5000
   selector:
     app: shodanimage
