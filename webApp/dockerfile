@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 # docker build --tag shodan/webserver .
-# docker run --publish 5000:50505 shodan/webserver
+# docker run --publish 5000:5000 shodan/webserver
 # at port 127.0.0.1:5000
 
 FROM python:3.11
