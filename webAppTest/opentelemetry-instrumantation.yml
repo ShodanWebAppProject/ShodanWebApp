@@ -2,7 +2,7 @@ apiVersion: opentelemetry.io/v1alpha1
 kind: Instrumentation
 metadata:
   name: demo-instrumentation
-  namespace: shodanspace
+  namespace: opentelemetry-operator-system
 spec:
   exporter:
     endpoint: http://shodancollector:4318
