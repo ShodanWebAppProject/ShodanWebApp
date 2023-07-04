@@ -18,7 +18,7 @@ variable "msi_id" {
 
 variable "azurerm_resource_group_name"{
   type        = string
-  default     = "rg-elegant-crow"
+  default     = "srs2023-stu-g8"
   description = "Name of the resource group."
 }
 
