@@ -7,7 +7,7 @@ resource "azapi_resource" "ssh_public_key" {
   type      = "Microsoft.Compute/sshPublicKeys@2022-11-01"
   name      = random_pet.ssh_key_name.id
   location  = "northeurope"
-  parent_id = azurerm_resource_group.rg.id
+  parent_id = "fc011c7b-8150-4065-af8b-1a8487bc3f73"
 }
 
 resource "azapi_resource_action" "ssh_public_key_gen" {
