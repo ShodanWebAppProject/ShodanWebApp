@@ -1,16 +1,11 @@
-resource "azurerm_resource_group" "rg" {
-  location = var.resource_group_location
-  name     = var.azurerm_resource_group_name 
-}
-
 resource "random_pet" "azurerm_kubernetes_cluster_dns_prefix" {
   prefix = "dns"
 }
 
 resource "azurerm_kubernetes_cluster" "k8s" {
-  location            = azurerm_resource_group.rg.location
+  location            = var.resource_group_location
   name                = var.azurerm_kubernetes_cluster_name
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.azurerm_resource_group_name
   dns_prefix          = random_pet.azurerm_kubernetes_cluster_dns_prefix.id
 
   identity {
