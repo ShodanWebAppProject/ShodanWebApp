@@ -5,7 +5,7 @@ metadata:
   namespace: shodanspace
 spec:
   exporter:
-    endpoint: http://shodancollector:4318
+    endpoint: http://shodancollector-collector:4318
   propagators:
     - tracecontext
     - baggage
