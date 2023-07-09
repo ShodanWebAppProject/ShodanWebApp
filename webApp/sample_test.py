@@ -98,6 +98,7 @@ def test_create_delete_alert(client):
     assert response.text == "alarm deleted"
 
 def test_callback(client):
+    '''test callback'''
     url='https://dev-m2sie3j46ouu7opn.us.auth0.com/oauth/token'
     payload = {"client_id":"A41DU0dXZPtn6pqqgb2A49JUXSfYqTNc",
         "client_secret":"n0s3aS1MXVDjnGlU1HetFKfeEsnB687r2StKlLZwkmM-LgM3XPTvtuckfnozY-c1",
@@ -105,7 +106,7 @@ def test_callback(client):
         "grant_type":"client_credentials"}
     res = client.post(url, data=payload)
     text=str(res.text)
-    return text
+
     access_token=text.split(",", maxsplit=1)[0].split(":")[1].split('"')[1]
     with client.session_transaction() as session:
         session["access_token"] = access_token
