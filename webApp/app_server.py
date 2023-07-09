@@ -280,15 +280,13 @@ def createalarm():
             args = request.json
             try:
                 api = shodan.Shodan(session["shodanid"])
-                print("alert:"+args["name"]+" "+args["ip"])
+                return "alert:"+args["name"]+" "+args["ip"]
                 if args["name"]=="":
                     alarm_dict=api.create_alert("alert:"+args["ip"],args["ip"])
                     print(alarm_dict)
-                    return("no name")
                 else:
                     alarm_dict=api.create_alert(args["name"],args["ip"])
                     print(alarm_dict)
-                    return("yes name")
                 alert_enable_trigger(alarm_dict['id'])
                 return "alarm created"
             except shodan.APIError:
