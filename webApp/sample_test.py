@@ -1,8 +1,9 @@
 '''pytest script'''
 
 import pytest
-from app_server import app as flask_app
 import shodan
+from app_server import app as flask_app
+
 
 @pytest.fixture(name="app")
 def app_fixture():
