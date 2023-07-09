@@ -176,7 +176,7 @@ def callback():
         session['shodanid']=shodanid
     except IndexError as nofindshodanid:
         print("shodanid da inserire: "+str(nofindshodanid))
-    print("session: "+session['shodanid'])
+    #print("session: "+session['shodanid'])
     return redirect("/")
 
 @app.route('/getshodanid/')
