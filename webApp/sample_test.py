@@ -2,7 +2,6 @@
 
 import pytest
 import shodan
-import json
 from app_server import app as flask_app
 
 
@@ -86,14 +85,36 @@ def test_create_delete_alert(client):
     with client.session_transaction() as session:
         session["shodanid"] = "tJiMTHh65vvJsgg4AaBtRRMZ844LFPpV"
         session["user"] = "example_user"
-    jsonValue = {
+    jsonvalue = {
         'ip' : '167.114.198.227',
         'name': 'test',
     }
-    response = client.post('/createalarm',json = jsonValue)
+    response = client.post('/createalarm',json = jsonvalue)
     print(response.text)
-    jsonValue = {
+    jsonvalue = {
         'id' : response.text,
     }
-    response = client.post('/deletealarm', json = jsonValue)
+    response = client.post('/deletealarm', json = jsonvalue)
     assert response.text == "alarm deleted"
+
+def test_callback(client):
+    url='https://dev-m2sie3j46ouu7opn.us.auth0.com/oauth/token'
+    payload = {"client_id":"A41DU0dXZPtn6pqqgb2A49JUXSfYqTNc",
+        "client_secret":"n0s3aS1MXVDjnGlU1HetFKfeEsnB687r2StKlLZwkmM-LgM3XPTvtuckfnozY-c1",
+        "audience":"https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/",
+        "grant_type":"client_credentials"}
+    res = client.post(url, data=payload, timeout=5)
+    text=str(res.text)
+    access_token=text.split(",", maxsplit=1)[0].split(":")[1].split('"')[1]
+    with client.session_transaction() as session:
+        session["access_token"] = access_token
+        session["client_id"] = "W9YKu6EZhmfJEuzdu34weobtOf0WoSQC"
+    
+    urlget='https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/users/'+session["client_id"]
+    headerget={ 'authorization': 'Bearer '+ session["access_token"],
+               'content-type':'application/json'} 
+    resget = client.get(urlget, headers=headerget, timeout=5)
+    print(str(resget.text))
+
+    shodanid=str(resget.text).split('shodanID":')[1].split("}")[0]
+    assert shodanid == "W9YKu6EZhmfJEuzdu34weobtOf0WoSQC"
