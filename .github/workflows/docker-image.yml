@@ -16,5 +16,5 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag shodanimage:latest
+      run: docker build . --file dockerfile --tag shodanimage:latest
       working-directory: ${{env.working-directory}}
