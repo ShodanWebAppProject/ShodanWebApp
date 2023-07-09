@@ -86,14 +86,14 @@ def test_create_delete_alert(client):
     with client.session_transaction() as session:
         session["shodanid"] = "tJiMTHh65vvJsgg4AaBtRRMZ844LFPpV"
         session["user"] = "example_user"
-    data = {
+    jsonValue = {
         'ip' : '167.114.198.227',
         'name': 'test',
     }
-    response = client.post('/createalarm', data)
+    response = client.post('/createalarm',json = jsonValue)
     assert response.text == "alarm created"
     data = {
         'ip' : '167.114.198.227',
     }
-    response = client.post('/deletealarm', data)
+    response = client.post('/deletealarm', json = jsonValue)
     assert response.text == "alarm deleted"
