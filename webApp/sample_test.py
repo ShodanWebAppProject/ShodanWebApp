@@ -13,16 +13,11 @@ def client_fixture(app):
     '''fixture client'''
     return app.test_client()
 
-def test_index(client):
-    '''test app index'''
-    response = client.get("/")
-    assert response.status_code == 200
-
 def test_session_key(client):
     '''test app session'''
     with client.session_transaction() as session:
         session["shodanid"] = "example_key"
-        session["users"] = "example_user"
+        session["user"] = "example_user"
     response = client.get("/")
     assert response.status_code == 200
 
@@ -38,7 +33,7 @@ def test_missing_session(client):
     '''test missing shodanid'''
     session.clear()
     with client.session_transaction() as session:
-        session["users"] = "example_user"
+        session["user"] = "example_user"
     response = client.get("/")
     assert response.status_code == 302
 

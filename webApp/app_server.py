@@ -16,12 +16,8 @@ from dotenv import find_dotenv, load_dotenv
 
 from authlib.integrations.flask_client import OAuth
 
-from opentelemetry import metrics, trace
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import (
-    BatchSpanProcessor,
-    ConsoleSpanExporter,
-)
+from opentelemetry import trace
+
 
 ENV_FILE = find_dotenv()
 if ENV_FILE:
