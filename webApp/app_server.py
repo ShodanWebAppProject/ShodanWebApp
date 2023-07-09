@@ -288,7 +288,7 @@ def createalarm():
                     alarm_dict=api.create_alert(args["name"],args["ip"])
                     print(alarm_dict)
                 alert_enable_trigger(alarm_dict['id'])
-                return "alarm created"
+                return alarm_dict['id']
             except shodan.APIError:
                 return str(shodan.APIError)+" error, alarm not created"
         return "error, alarm not created"
