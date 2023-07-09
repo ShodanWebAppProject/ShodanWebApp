@@ -91,4 +91,4 @@ def test_create_delete_alert(client):
         'ip' : '167.114.198.227',
     }]
     response = client.get('/createalarm', json=json.dumps(data))
-    assert response.text = "alarm created"
+    assert response.text == "alarm created"
