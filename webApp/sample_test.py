@@ -105,18 +105,17 @@ def test_callback(client):
         "client_secret":"n0s3aS1MXVDjnGlU1HetFKfeEsnB687r2StKlLZwkmM-LgM3XPTvtuckfnozY-c1",
         "audience":"https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/",
         "grant_type":"client_credentials"}
-    res = requests.post(url, data=payload)
+    res = requests.post(url, data=payload, timeout=5)
     text=str(res.text)
 
     access_token=text.split(",", maxsplit=1)[0].split(":")[1].split('"')[1]
     with client.session_transaction() as session:
         session["access_token"] = access_token
         session["client_id"] = "auth0|64ab0a65bb372f7bd8809b70"
-    
     urlget='https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/users/'+session["client_id"]
     headerget={ 'authorization': 'Bearer '+ session["access_token"],
                'content-type':'application/json'} 
-    resget = requests.get(urlget, headers=headerget)
+    resget = requests.get(urlget, headers=headerget, timeout=5)
     print(str(resget.text))
 
     shodanid=str(resget.text).split('shodanID":')[1].split("}")[0]
