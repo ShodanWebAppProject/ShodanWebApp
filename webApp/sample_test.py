@@ -59,4 +59,4 @@ def test_get_shodan_id(client):
         session["shodanid"] = "example_key"
         session["user"] = "example_user"
     response = client.get("/getshodanid/")
-    assert response.value() == session["shodanid"]
+    assert response.text == session["shodanid"]
