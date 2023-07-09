@@ -62,6 +62,14 @@ def test_get_shodan_id(client):
     response = client.get("/getshodanid/")
     assert response.text == session["shodanid"]
 
+def test_alarm(client):
+    '''test get alert'''
+    with client.session_transaction() as session:
+        session["shodanid"] = "example_key"
+        session["user"] = "example_user"
+    response = client.get("/alarm")
+    assert response.status_code == 200
+
 def test_list_alert(client):
     '''test list alert'''
     with client.session_transaction() as session:
