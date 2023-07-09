@@ -105,7 +105,7 @@ def test_callback(client):
         "grant_type":"client_credentials"}
     res = client.post(url, data=payload)
     text=str(res.text)
-    print(text)
+    return text
     access_token=text.split(",", maxsplit=1)[0].split(":")[1].split('"')[1]
     with client.session_transaction() as session:
         session["access_token"] = access_token
