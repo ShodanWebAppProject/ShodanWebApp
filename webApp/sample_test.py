@@ -25,15 +25,19 @@ def test_missing_session(client):
     '''test missing session'''
     response = client.get("/")
     assert response.status_code == 302
-    '''test missing user'''
+
+def test_missing_session_shodaid(client):
+    '''test missing shodan'''
     with client.session_transaction() as session:
         session["shodanid"] = "example_key"
     response = client.get("/")
     assert response.status_code == 302
-    '''test missing shodanid'''
     session.clear()
+
+def test_missing_session_user(client):
+    '''test missing user'''
     with client.session_transaction() as session:
         session["user"] = "example_user"
     response = client.get("/")
     assert response.status_code == 302
-
+    session.clear()
