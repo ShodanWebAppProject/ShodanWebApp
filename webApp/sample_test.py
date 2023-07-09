@@ -3,11 +3,6 @@
 import pytest
 from app_server import app as flask_app
 
-@pytest.fixture(name="app")
-def app_fixture():
-    '''fixture app'''
-    yield flask_app
-
 @pytest.fixture(name="client")
 def client_fixture(app):
     '''fixture client'''
@@ -20,6 +15,11 @@ def test_session_key(client):
         session["user"] = "example_user"
     response = client.get("/")
     assert response.status_code == 200
+
+def test_shodanid_no_session(client):
+    '''test shodan id'''
+    response = client.get('/shodaid')
+    assert response.status_code == 302
 
 def test_missing_session(client):
     '''test missing session'''
@@ -46,3 +46,11 @@ def test_login_redirect(client):
     '''test login redirect'''
     response = client.get("/login")
     assert response.status_code == 302
+
+def test_get_shodan_id(client):
+    '''test get shodan id'''
+    with client.session_transaction() as session:
+        session["shodanid"] = "example_key"
+        session["user"] = "example_user"
+    response = client.get("/getshodanid/")
+    assert response.value() == session["shodanid"]
