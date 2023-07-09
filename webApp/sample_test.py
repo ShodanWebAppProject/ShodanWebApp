@@ -2,6 +2,7 @@
 
 import pytest
 import shodan
+import json
 from app_server import app as flask_app
 
 
@@ -79,3 +80,15 @@ def test_list_alert(client):
     api = shodan.Shodan(session["shodanid"])
     list_alert=api.alerts()
     assert response.text == str(list_alert)+"\n"
+
+def test_create_delete_alert(client):
+    '''test create delete alert'''
+    with client.session_transaction() as session:
+        session["shodanid"] = "W9YKu6EZhmfJEuzdu34weobtOf0WoSQC"
+        session["user"] = "example_user"
+    data = [{
+        'name': 'test',
+        'ip' : '167.114.198.227',
+    }]
+    response = client.get('/createalarm', json=json.dumps(data))
+    assert response.text = "alarm created"
