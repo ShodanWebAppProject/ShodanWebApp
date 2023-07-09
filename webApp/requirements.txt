@@ -13,3 +13,11 @@ authlib>=1.0
 python-jose
 flask-cors
 six	
+
+opentelemetry-instrumentation-flask 
+opentelemetry-sdk
+opentelemetry-api
+opentelemetry-distro[otlp] 
+opentelemetry-instrumentation
+opentelemetry-exporter-otlp-proto-grpc
+    

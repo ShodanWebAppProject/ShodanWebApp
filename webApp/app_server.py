@@ -16,6 +16,13 @@ from dotenv import find_dotenv, load_dotenv
 
 from authlib.integrations.flask_client import OAuth
 
+from opentelemetry import metrics, trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import (
+    BatchSpanProcessor,
+    ConsoleSpanExporter,
+)
+
 ENV_FILE = find_dotenv()
 if ENV_FILE:
     load_dotenv(ENV_FILE)
@@ -49,6 +56,11 @@ oauth.register(
     connection="email",
     server_metadata_url=f'https://{env.get("AUTH0_DOMAIN")}/.well-known/openid-configuration',
 )
+
+#Test span, visualize in Jaeger
+tracer = trace.get_tracer(__name__)
+with tracer.start_as_current_span("foo"):
+    print("Trace testing!")
 
 
 @sock_vuln.route('/vuln')
