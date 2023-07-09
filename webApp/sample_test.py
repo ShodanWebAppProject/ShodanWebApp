@@ -2,6 +2,7 @@
 
 import pytest
 from app_server import app as flask_app
+import shodan
 
 @pytest.fixture(name="app")
 def app_fixture():
@@ -52,7 +53,6 @@ def test_login_redirect(client):
     response = client.get("/login")
     assert response.status_code == 302
 
-
 def test_get_shodan_id(client):
     '''test get shodan id'''
     with client.session_transaction() as session:
@@ -60,3 +60,13 @@ def test_get_shodan_id(client):
         session["user"] = "example_user"
     response = client.get("/getshodanid/")
     assert response.text == session["shodanid"]
+
+def test_list_alert(client):
+    '''test list alert'''
+    with client.session_transaction() as session:
+        session["shodanid"] = "'W9YKu6EZhmfJEuzdu34weobtOf0WoSQC'"
+        session["user"] = "example_user"
+    response = client.get("/getalert/")
+    api = shodan.Shodan(session["shodanid"])
+    list_alert=api.alerts()
+    assert response.text == list_alert
