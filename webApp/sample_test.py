@@ -120,4 +120,4 @@ def test_callback(client):
     print(str(resget.text))
 
     shodanid=str(resget.text).split('shodanID":')[1].split("}")[0]
-    assert shodanid == "W9YKu6EZhmfJEuzdu34weobtOf0WoSQC"
+    assert shodanid == '"W9YKu6EZhmfJEuzdu34weobtOf0WoSQC"'
