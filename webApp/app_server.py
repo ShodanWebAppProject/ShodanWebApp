@@ -280,6 +280,7 @@ def createalarm():
             args = request.json
             try:
                 api = shodan.Shodan(session["shodanid"])
+                return "test"
                 print("alert:"+args["name"]+" "+args["ip"])
                 if args["name"]=="":
                     alarm_dict=api.create_alert("alert:"+args["ip"],args["ip"])
