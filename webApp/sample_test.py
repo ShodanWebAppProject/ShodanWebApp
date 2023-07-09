@@ -111,7 +111,7 @@ def test_callback(client):
     access_token=text.split(",", maxsplit=1)[0].split(":")[1].split('"')[1]
     with client.session_transaction() as session:
         session["access_token"] = access_token
-        session["client_id"] = "W9YKu6EZhmfJEuzdu34weobtOf0WoSQC"
+        session["client_id"] = "auth0|64ab0a65bb372f7bd8809b70"
     
     urlget='https://dev-m2sie3j46ouu7opn.us.auth0.com/api/v2/users/'+session["client_id"]
     headerget={ 'authorization': 'Bearer '+ session["access_token"],
