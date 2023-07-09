@@ -64,7 +64,7 @@ def test_get_shodan_id(client):
 def test_list_alert(client):
     '''test list alert'''
     with client.session_transaction() as session:
-        session["shodanid"] = "'W9YKu6EZhmfJEuzdu34weobtOf0WoSQC'"
+        session["shodanid"] = "W9YKu6EZhmfJEuzdu34weobtOf0WoSQC"
         session["user"] = "example_user"
     response = client.get("/getalert/")
     api = shodan.Shodan(session["shodanid"])
