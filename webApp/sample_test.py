@@ -69,4 +69,4 @@ def test_list_alert(client):
     response = client.get("/getalert/")
     api = shodan.Shodan(session["shodanid"])
     list_alert=api.alerts()
-    assert response.text == list_alert
+    assert response.text == list_alert+"\n"
