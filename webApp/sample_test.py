@@ -92,7 +92,7 @@ def test_create_delete_alert(client):
     }
     response = client.post('/createalarm',json = jsonValue)
     assert response.text == "alarm created"
-    data = {
+    jsonValue = {
         'ip' : '167.114.198.227',
     }
     response = client.post('/deletealarm', json = jsonValue)
