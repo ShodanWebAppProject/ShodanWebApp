@@ -3,6 +3,11 @@
 import pytest
 from app_server import app as flask_app
 
+@pytest.fixture(name="app")
+def app_fixture():
+    '''fixture app'''
+    yield flask_app
+
 @pytest.fixture(name="client")
 def client_fixture(app):
     '''fixture client'''
@@ -46,6 +51,7 @@ def test_login_redirect(client):
     '''test login redirect'''
     response = client.get("/login")
     assert response.status_code == 302
+
 
 def test_get_shodan_id(client):
     '''test get shodan id'''
