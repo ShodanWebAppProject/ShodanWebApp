@@ -22,9 +22,23 @@ def test_session_key(client):
     '''test app session'''
     with client.session_transaction() as session:
         session["shodanid"] = "example_key"
-
+        session["users"] = "example_user"
     response = client.get("/")
     assert response.status_code == 200
+
+def test_missing_session(client):
+    '''test missing session'''
+    response = client.get("/")
+    assert response.status_code == 302
+    '''test missing user'''
     with client.session_transaction() as session:
-        assert session.get("shodanid") == "example_key"
+        session["shodanid"] = "example_key"
+    response = client.get("/")
+    assert response.status_code == 302
+    '''test missing shodanid'''
+    session.clear()
+    with client.session_transaction() as session:
+        session["users"] = "example_user"
+    response = client.get("/")
+    assert response.status_code == 302
 
