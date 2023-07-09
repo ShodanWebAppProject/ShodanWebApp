@@ -84,7 +84,7 @@ def test_list_alert(client):
 def test_create_delete_alert(client):
     '''test create delete alert'''
     with client.session_transaction() as session:
-        session["shodanid"] = "W9YKu6EZhmfJEuzdu34weobtOf0WoSQC"
+        session["shodanid"] = "tJiMTHh65vvJsgg4AaBtRRMZ844LFPpV"
         session["user"] = "example_user"
     data = [{
         'name': 'test',
