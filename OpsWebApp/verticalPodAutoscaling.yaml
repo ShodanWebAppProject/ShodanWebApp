@@ -5,8 +5,9 @@ metadata:
   namespace: shodanspace
 spec:
   targetRef:
-    apiVersion: apps/v1
+    apiVersion: "apps/v1"
     kind:       Deployment
     name:       shodanimage
+    namespace:  shodanspace
   updatePolicy:
     updateMode: "Off"
