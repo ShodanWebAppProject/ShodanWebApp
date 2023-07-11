@@ -16,12 +16,8 @@ from dotenv import find_dotenv, load_dotenv
 
 from authlib.integrations.flask_client import OAuth
 
-from opentelemetry import metrics, trace
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import (
-    BatchSpanProcessor,
-    ConsoleSpanExporter,
-)
+from opentelemetry import trace
+
 
 ENV_FILE = find_dotenv()
 if ENV_FILE:
@@ -292,7 +288,7 @@ def createalarm():
                     alarm_dict=api.create_alert(args["name"],args["ip"])
                     print(alarm_dict)
                 alert_enable_trigger(alarm_dict['id'])
-                return "alarm created"
+                return alarm_dict['id']
             except shodan.APIError:
                 return str(shodan.APIError)+" error, alarm not created"
         return "error, alarm not created"
