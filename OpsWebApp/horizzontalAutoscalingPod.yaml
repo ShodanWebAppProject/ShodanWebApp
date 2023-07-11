@@ -1,7 +1,7 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: shodanimage
+  name: shodanimage-hpa
   namespace: shodanspace
 spec:
   maxReplicas: 10
