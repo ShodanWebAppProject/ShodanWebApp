@@ -1,0 +1,11 @@
+apiVersion: autoscaling.k8s.io/v1beta1
+  kind: VerticalPodAutoscaler
+  metadata:
+    name: shodanimage-vpa
+  spec:
+    targetRef:
+      apiVersion: "apps/v1"
+      kind:       Deployment
+      name:       shodanimage
+    updatePolicy:
+      updateMode: "Off"
