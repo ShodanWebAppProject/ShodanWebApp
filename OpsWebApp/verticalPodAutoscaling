@@ -2,6 +2,7 @@ apiVersion: autoscaling.k8s.io/v1beta1
   kind: VerticalPodAutoscaler
   metadata:
     name: shodanimage-vpa
+    namespace: shodanspace
   spec:
     targetRef:
       apiVersion: "apps/v1"
