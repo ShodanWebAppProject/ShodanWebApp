@@ -15,5 +15,5 @@ COPY . .
 
 EXPOSE 50505 
 
-#ENTRYPOINT ["gunicorn", "app_server:app"]
-ENTRYPOINT ["gunicorn", "--certfile", "cert.pem", "--keyfile", "key.pem", "app_server:app"]
+ENTRYPOINT ["gunicorn", "app_server:app"]
+#ENTRYPOINT ["gunicorn", "--certfile", "cert.pem", "--keyfile", "key.pem", "app_server:app"]
