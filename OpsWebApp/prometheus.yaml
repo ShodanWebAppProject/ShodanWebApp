@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/instance: prometheus-postgres-exporter-4.8.0
     app.kubernetes.io/version: "10.0.1"
     app.kubernetes.io/managed-by: Helm
-  name: prometheus-postgres-exporter-4.8.0-grafana
+  name: prometheus-postgres-exporter-4-8-0-grafana
   namespace: default
 ---
 # Source: kube-prometheus-stack/charts/kube-state-metrics/templates/serviceaccount.yaml
@@ -108,7 +108,7 @@ metadata:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: prometheus-postgres-exporter-4.8.0-grafana
+  name: prometheus-postgres-exporter-4-8-0-grafana
   namespace: default
   labels:
     helm.sh/chart: grafana-6.58.2
@@ -151,7 +151,7 @@ metadata:
     app.kubernetes.io/instance: prometheus-postgres-exporter-4.8.0
     app.kubernetes.io/version: "10.0.1"
     app.kubernetes.io/managed-by: Helm
-  name: prometheus-postgres-exporter-4.8.0-grafana-config-dashboards
+  name: prometheus-postgres-exporter-4-8-0-grafana-config-dashboards
   namespace: default
 data:
   provider.yaml: |-
@@ -172,7 +172,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: prometheus-postgres-exporter-4.8.0-grafana
+  name: prometheus-postgres-exporter-4-8-0-grafana
   namespace: default
   labels:
     helm.sh/chart: grafana-6.58.2
@@ -866,7 +866,7 @@ metadata:
     app.kubernetes.io/instance: prometheus-postgres-exporter-4.8.0
     app.kubernetes.io/version: "10.0.1"
     app.kubernetes.io/managed-by: Helm
-  name: prometheus-postgres-exporter-4.8.0-grafana-clusterrole
+  name: prometheus-postgres-exporter-4-8-0-grafana-clusterrole
 rules:
   - apiGroups: [""] # "" indicates the core API group
     resources: ["configmaps", "secrets"]
@@ -1168,7 +1168,7 @@ rules:
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: prometheus-postgres-exporter-4.8.0-grafana-clusterrolebinding
+  name: prometheus-postgres-exporter-4-8-0-grafana-clusterrolebinding
   labels:
     helm.sh/chart: grafana-6.58.2
     app.kubernetes.io/name: grafana
@@ -1177,11 +1177,11 @@ metadata:
     app.kubernetes.io/managed-by: Helm
 subjects:
   - kind: ServiceAccount
-    name: prometheus-postgres-exporter-4.8.0-grafana
+    name: prometheus-postgres-exporter-4-8-0-grafana
     namespace: default
 roleRef:
   kind: ClusterRole
-  name: prometheus-postgres-exporter-4.8.0-grafana-clusterrole
+  name: prometheus-postgres-exporter-4-8-0-grafana-clusterrole
   apiGroup: rbac.authorization.k8s.io
 ---
 # Source: kube-prometheus-stack/charts/kube-state-metrics/templates/clusterrolebinding.yaml
@@ -1259,7 +1259,7 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: prometheus-postgres-exporter-4.8.0-grafana
+  name: prometheus-postgres-exporter-4-8-0-grafana
   namespace: default
   labels:
     helm.sh/chart: grafana-6.58.2
@@ -1273,7 +1273,7 @@ rules: []
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: prometheus-postgres-exporter-4.8.0-grafana
+  name: prometheus-postgres-exporter-4-8-0-grafana
   namespace: default
   labels:
     helm.sh/chart: grafana-6.58.2
@@ -1284,17 +1284,17 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: prometheus-postgres-exporter-4.8.0-grafana
+  name: prometheus-postgres-exporter-4-8-0-grafana
 subjects:
 - kind: ServiceAccount
-  name: prometheus-postgres-exporter-4.8.0-grafana
+  name: prometheus-postgres-exporter-4-8-0-grafana
   namespace: default
 ---
 # Source: kube-prometheus-stack/charts/grafana/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: prometheus-postgres-exporter-4.8.0-grafana
+  name: prometheus-postgres-exporter-4-8-0-grafana
   namespace: default
   labels:
     helm.sh/chart: grafana-6.58.2
@@ -1721,7 +1721,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: prometheus-postgres-exporter-4.8.0-grafana
+  name: prometheus-postgres-exporter-4-8-0-grafana
   namespace: default
   labels:
     helm.sh/chart: grafana-6.58.2
@@ -1751,7 +1751,7 @@ spec:
         kubectl.kubernetes.io/default-container: grafana
     spec:
       
-      serviceAccountName: prometheus-postgres-exporter-4.8.0-grafana
+      serviceAccountName: prometheus-postgres-exporter-4-8-0-grafana
       automountServiceAccountToken: true
       securityContext:
         fsGroup: 472
@@ -1779,12 +1779,12 @@ spec:
             - name: REQ_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: prometheus-postgres-exporter-4.8.0-grafana
+                  name: prometheus-postgres-exporter-4-8-0-grafana
                   key: admin-user
             - name: REQ_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: prometheus-postgres-exporter-4.8.0-grafana
+                  name: prometheus-postgres-exporter-4-8-0-grafana
                   key: admin-password
             - name: REQ_URL
               value: http://localhost:3000/api/admin/provisioning/dashboards/reload
@@ -1817,12 +1817,12 @@ spec:
             - name: REQ_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: prometheus-postgres-exporter-4.8.0-grafana
+                  name: prometheus-postgres-exporter-4-8-0-grafana
                   key: admin-user
             - name: REQ_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: prometheus-postgres-exporter-4.8.0-grafana
+                  name: prometheus-postgres-exporter-4-8-0-grafana
                   key: admin-password
             - name: REQ_URL
               value: http://localhost:3000/api/admin/provisioning/datasources/reload
@@ -1879,12 +1879,12 @@ spec:
             - name: GF_SECURITY_ADMIN_USER
               valueFrom:
                 secretKeyRef:
-                  name: prometheus-postgres-exporter-4.8.0-grafana
+                  name: prometheus-postgres-exporter-4-8-0-grafana
                   key: admin-user
             - name: GF_SECURITY_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: prometheus-postgres-exporter-4.8.0-grafana
+                  name: prometheus-postgres-exporter-4-8-0-grafana
                   key: admin-password
             - name: GF_PATHS_DATA
               value: /var/lib/grafana/
@@ -1908,7 +1908,7 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: prometheus-postgres-exporter-4.8.0-grafana
+            name: prometheus-postgres-exporter-4-8-0-grafana
         - name: storage
           emptyDir: {}
         - name: sc-dashboard-volume
@@ -1916,7 +1916,7 @@ spec:
             {}
         - name: sc-dashboard-provider
           configMap:
-            name: prometheus-postgres-exporter-4.8.0-grafana-config-dashboards
+            name: prometheus-postgres-exporter-4-8-0-grafana-config-dashboards
         - name: sc-datasources-volume
           emptyDir:
             {}
@@ -5190,7 +5190,7 @@ spec:
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: prometheus-postgres-exporter-4.8.0-grafana
+  name: prometheus-postgres-exporter-4-8-0-grafana
   namespace: default
   labels:
     helm.sh/chart: grafana-6.58.2
