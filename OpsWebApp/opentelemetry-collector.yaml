@@ -19,7 +19,7 @@ spec:
         
     exporters:
       jaeger:
-        endpoint: jaeger-collector.jaeger.svc.cluster.local:14250
+        endpoint: jaeger-all-in-one-collector.observability.svc.cluster.local:14250
         tls:
           insecure: true
       logging:
