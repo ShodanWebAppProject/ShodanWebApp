@@ -1346,7 +1346,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: prometheus-postgres-exporter-4.8.0-prometheus-node-exporter
+  name: prometheus-postgres-exporter-4-8-0-prometheus-node-exporter
   namespace: default
   labels:
     helm.sh/chart: prometheus-node-exporter-4.18.1
@@ -1602,7 +1602,7 @@ spec:
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: prometheus-postgres-exporter-4.8.0-prometheus-node-exporter
+  name: prometheus-postgres-exporter-4-8-0-prometheus-node-exporter
   namespace: default
   labels:
     helm.sh/chart: prometheus-node-exporter-4.18.1
@@ -1644,7 +1644,7 @@ spec:
         runAsGroup: 65534
         runAsNonRoot: true
         runAsUser: 65534
-      serviceAccountName: prometheus-postgres-exporter-4.8.0-prometheus-node-exporter
+      serviceAccountName: prometheus-postgres-exporter-4-8-0-prometheus-node-exporter
       containers:
         - name: node-exporter
           image: quay.io/prometheus/node-exporter:v1.6.0
@@ -5243,7 +5243,7 @@ spec:
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: prometheus-postgres-exporter-4.8.0-prometheus-node-exporter
+  name: prometheus-postgres-exporter-4-8-0-prometheus-node-exporter
   namespace: default
   labels:
     helm.sh/chart: prometheus-node-exporter-4.18.1
