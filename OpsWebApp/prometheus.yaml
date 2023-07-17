@@ -33,7 +33,7 @@ imagePullSecrets:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: prometheus-postgres-exporter-4.8.0-prometheus-node-exporter
+  name: prometheus-postgres-exporter-4-8-0-prometheus-node-exporter
   namespace: default
   labels:
     helm.sh/chart: prometheus-node-exporter-4.18.1
