@@ -5,6 +5,7 @@ metadata:
   namespace: shodanspace
 spec:
   maxReplicas: 100
+  minReplicas: 20
   metrics:
   - resource:
       name: cpu
