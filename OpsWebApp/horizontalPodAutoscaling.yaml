@@ -4,8 +4,8 @@ metadata:
   name: shodanimage-hpa
   namespace: shodanspace
 spec:
-  maxReplicas: 100
-  minReplicas: 20
+  maxReplicas: 20
+  minReplicas: 10
   metrics:
   - resource:
       name: cpu
